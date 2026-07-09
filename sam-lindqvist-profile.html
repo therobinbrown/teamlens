@@ -7,8 +7,6 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Albert Sans',sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;min-height:100vh;display:grid;place-items:center;padding:40px 20px;
 background-image:none;}
-.back{position:fixed;top:20px;left:20px;font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.05em;text-decoration:none;color:#5a6270;background:#f7f9fb;border:1px solid var(--line);border-radius:10px;padding:9px 15px;}
-.back:hover{color:var(--teal);border-color:var(--teal-bright);}
 .card{background:#f7f9fb;border:1px solid var(--line);border-radius:22px;padding:42px;max-width:620px;width:100%;box-shadow:0 16px 50px rgba(20,32,28,0.14);}
 h2{font-family:'Fraunces',serif;font-weight:900;font-size:38px;letter-spacing:-0.02em;}
 .role{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-bright);margin:5px 0 24px;}
@@ -16,21 +14,72 @@ h2{font-family:'Fraunces',serif;font-weight:900;font-size:38px;letter-spacing:-0
 .field{margin-bottom:20px;}
 .field h4{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--copper);margin-bottom:6px;}
 .field p{font-size:15.5px;color:#2e3833;}
+.mgr{font-family:'Spline Sans Mono',monospace;font-size:8.5px;letter-spacing:0.08em;background:#e2e0f0;color:#453a8c;padding:2px 6px;border-radius:5px;text-transform:uppercase;}
 .chips{display:flex;flex-wrap:wrap;gap:8px;}
 .chip{background:var(--paper-2);border:1px solid var(--line);border-radius:99px;padding:5px 14px;font-size:13.5px;}
+.priv-foot{margin-top:22px;padding-top:14px;border-top:1px dashed var(--line);font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:0.03em;color:#9aa2b0;}
+.toolbar{max-width:620px;width:100%;display:flex;gap:10px;justify-content:flex-end;margin-bottom:14px;flex-wrap:wrap;}
+.tbtn{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.05em;padding:9px 15px;border-radius:10px;cursor:pointer;border:1.5px solid var(--line);background:#fff;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;}
+.tbtn:hover{border-color:var(--copper);color:var(--copper);}
+.tbtn.on{background:var(--copper);color:#fff;border-color:var(--copper);}
+.tbtn.save{background:var(--teal);color:#fff;border-color:var(--teal);display:none;}
+.tbtn.save:hover{background:var(--teal-bright);}
+.back{position:fixed;top:18px;left:18px;font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.05em;text-decoration:none;color:#5a6472;background:#f7f9fb;border:1px solid var(--line);border-radius:10px;padding:9px 14px;}
+.back:hover{color:var(--teal);border-color:var(--teal-bright);}
+body.editing [contenteditable]:hover{background:rgba(61,106,158,0.08);border-radius:6px;}
+[contenteditable]:focus{outline:none;background:#fff;box-shadow:0 0 0 2px var(--copper);border-radius:6px;padding:2px 6px;margin:-2px -6px;}
+.edit-hint{max-width:620px;width:100%;background:#eef3f9;border:1px solid var(--line);border-left:5px solid var(--teal-bright);border-radius:12px;padding:12px 16px;font-size:13px;color:#2a3a52;margin-bottom:14px;display:none;}
+body.editing .edit-hint{display:block;}
 </style></head><body>
 <a class="back" href="team-roster.html">← back to team</a>
+<div class="toolbar">
+  <a class="tbtn" href="teammate-intake.html" title="Change privacy settings or hidden fields">↻ Redo full intake</a>
+  <button class="tbtn" id="editToggle">✏️ Edit</button>
+  <button class="tbtn save" id="saveBtn">⬇ Download updated profile</button>
+</div>
+<div class="edit-hint" id="editHint">You're editing the visible fields — click any text to change it, then download. To change privacy levels, add hidden fields, or start fresh, use “Redo full intake.”</div>
 <div class="card">
-<h2>Sam Lindqvist</h2><div class="role">Data &amp; Analytics</div>
-<div class="tagline">"Show me the numbers and I'll show you the story they're telling."</div>
-<div class="field"><h4>Hours & timezone</h4><p>8–4 CET (UTC+1). I keep a focus block 1–3 in the afternoon. Otherwise I'm reachable and quick to respond.</p></div>
-<div class="field"><h4>How I communicate</h4><p>Async first, and I like things written down so I can point back to them. Quick questions in chat are fine anytime; I usually reply within a couple of hours.</p></div>
-<div class="field"><h4>Feedback that works for me</h4><p>Direct and in private. I'd genuinely rather know exactly what's not working than get a softened version.</p></div>
-<div class="field"><h4>In meetings</h4><p>Comfortable speaking up live, especially in working sessions. Camera-on is fine with me. I'll happily present data and walk people through it.</p></div>
-<div class="field"><h4>Strengths</h4><div class="chips"><span class="chip">Engineering</span><span class="chip">Data</span><span class="chip">Writing</span></div></div>
-<div class="field"><h4>What drains me / brings out my best</h4><p>Ambiguous metrics and shifting definitions stress me — I do my best when success is clearly defined. I need some quiet focus time to do deep analysis well.</p></div>
-<div class="field"><h4>Growing toward</h4><p>Getting better at telling the story around the data, not just producing it — more narrative, less dashboard.</p></div>
+<h2 contenteditable="false" data-key="name">Sam Lindqvist</h2><div class="role" contenteditable="false" data-key="role">Data &amp; Analytics</div>
+<div class="tagline" contenteditable="false" data-key="tagline">"Show me the numbers and I'll show you the story they're telling."</div>
+<div class="field" data-field="hours"><h4>Hours & timezone</h4><p contenteditable="false" data-key="hours">8–4 CET (UTC+1); focus block 1–3pm. Otherwise quick to respond.</p></div>
+<div class="field" data-field="communication"><h4>How I communicate</h4><p contenteditable="false" data-key="communication">Async first; I like things written down. Quick chat questions fine; I reply within a couple of hours.</p></div>
+<div class="field" data-field="urgency"><h4>Urgent vs. non-urgent</h4><p contenteditable="false" data-key="urgency">Urgent: tag me in chat. Non-urgent: email or message anytime.</p></div>
+<div class="field" data-field="assignments"><h4>How I like to receive tasks</h4><p contenteditable="false" data-key="assignments">Clear definitions of success and some quiet focus time for deep analysis.</p></div>
 
-<div class="field"><h4>What helps me feel supported</h4><p>Public recognition when the analysis actually moved a decision — it means a lot to know the work landed.</p></div>
-<div class="field"><h4>A little about me</h4><p>Coffee keeps me alive; I roast my own beans and will absolutely talk your ear off about it.</p></div>
-</div></body></html>
+<div class="field" data-field="meetings"><h4>In meetings</h4><p contenteditable="false" data-key="meetings">Comfortable live, especially in working sessions; happy to present data.</p></div>
+<div class="field" data-field="strengths"><h4>Strengths</h4><div class="chips"><span class="chip">Engineering</span><span class="chip">Data</span><span class="chip">Writing</span></div></div>
+<div class="field" data-field="stressors"><h4>What drains me / brings out my best</h4><p contenteditable="false" data-key="stressors">Ambiguous metrics stress me; I do best when success is clearly defined.</p></div>
+<div class="field" data-field="growth"><h4>Growing toward</h4><p contenteditable="false" data-key="growth">Getting better at telling the story around the data, not just producing it.</p></div>
+
+<div class="field" data-field="support"><h4>What helps me feel supported</h4><p contenteditable="false" data-key="support">Recognition when the analysis actually moved a decision.</p></div>
+<div class="field" data-field="humanNote"><h4>A little about me</h4><p contenteditable="false" data-key="humanNote">Coffee keeps me alive; I roast my own beans.</p></div>
+<div class="priv-foot">🔒 1 field is set to Manager, AI-only, or Private and kept off this public profile — shared only through the manager view or used discreetly by the assistant, as Sam allowed.</div>
+</div>
+<script type="application/json" id="teamlens-profile">{"name":"Sam Lindqvist","role":"Data & Analytics","fields":{"tagline":{"value":"Show me the numbers and I'll show you the story they're telling.","tier":"team"},"hours":{"value":"8–4 CET (UTC+1); focus block 1–3pm. Otherwise quick to respond.","tier":"team"},"communication":{"value":"Async first; I like things written down. Quick chat questions fine; I reply within a couple of hours.","tier":"team"},"urgency":{"value":"Urgent: tag me in chat. Non-urgent: email or message anytime.","tier":"team"},"assignments":{"value":"Clear definitions of success and some quiet focus time for deep analysis.","tier":"team"},"feedback":{"value":"Direct and in private; I'd rather know exactly what's not working.","tier":"manager"},"meetings":{"value":"Comfortable live, especially in working sessions; happy to present data.","tier":"team"},"strengths":{"value":"Engineering, Data, Writing","tier":"team"},"stressors":{"value":"Ambiguous metrics stress me; I do best when success is clearly defined.","tier":"team"},"growth":{"value":"Getting better at telling the story around the data, not just producing it.","tier":"team"},"support":{"value":"Recognition when the analysis actually moved a decision.","tier":"team"},"humanNote":{"value":"Coffee keeps me alive; I roast my own beans.","tier":"team"}}}</script>
+<script>
+(function(){
+  var editing=false;
+  var tgl=document.getElementById('editToggle'), sv=document.getElementById('saveBtn');
+  function setEdit(on){
+    editing=on;
+    document.body.classList.toggle('editing',on);
+    document.querySelectorAll('[contenteditable]').forEach(function(e){e.setAttribute('contenteditable',on?'true':'false');});
+    tgl.classList.toggle('on',on); tgl.textContent=on?'✓ Done':'✏️ Edit';
+    sv.style.display=on?'inline-flex':'none';
+  }
+  tgl.onclick=function(){setEdit(!editing);};
+  sv.onclick=function(){
+    // strip editing chrome and save a clean copy
+    var clone=document.documentElement.cloneNode(true);
+    var b=clone.querySelector('body'); if(b)b.classList.remove('editing');
+    clone.querySelectorAll('[contenteditable]').forEach(function(e){e.setAttribute('contenteditable','false');});
+    var tb=clone.querySelector('.toolbar'); if(tb){ var s=tb.querySelector('.save'); if(s)s.style.display='none'; var t=tb.querySelector('#editToggle'); if(t){t.classList.remove('on');t.textContent='✏️ Edit';} }
+    var html='<!DOCTYPE html>\n'+clone.outerHTML;
+    var blob=new Blob([html],{type:'text/html'});
+    var name=(clone.querySelector('[data-key="name"]')||{}).textContent||'teammate';
+    var slug=name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=slug+'-profile.html'; a.click();
+  };
+})();
+</script>
+</body></html>

@@ -7,8 +7,6 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Albert Sans',sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;min-height:100vh;display:grid;place-items:center;padding:40px 20px;
 background-image:none;}
-.back{position:fixed;top:20px;left:20px;font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.05em;text-decoration:none;color:#5a6270;background:#f7f9fb;border:1px solid var(--line);border-radius:10px;padding:9px 15px;}
-.back:hover{color:var(--teal);border-color:var(--teal-bright);}
 .card{background:#f7f9fb;border:1px solid var(--line);border-radius:22px;padding:42px;max-width:620px;width:100%;box-shadow:0 16px 50px rgba(20,32,28,0.14);}
 h2{font-family:'Fraunces',serif;font-weight:900;font-size:38px;letter-spacing:-0.02em;}
 .role{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-bright);margin:5px 0 24px;}
@@ -16,21 +14,72 @@ h2{font-family:'Fraunces',serif;font-weight:900;font-size:38px;letter-spacing:-0
 .field{margin-bottom:20px;}
 .field h4{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--copper);margin-bottom:6px;}
 .field p{font-size:15.5px;color:#2e3833;}
+.mgr{font-family:'Spline Sans Mono',monospace;font-size:8.5px;letter-spacing:0.08em;background:#e2e0f0;color:#453a8c;padding:2px 6px;border-radius:5px;text-transform:uppercase;}
 .chips{display:flex;flex-wrap:wrap;gap:8px;}
 .chip{background:var(--paper-2);border:1px solid var(--line);border-radius:99px;padding:5px 14px;font-size:13.5px;}
+.priv-foot{margin-top:22px;padding-top:14px;border-top:1px dashed var(--line);font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:0.03em;color:#9aa2b0;}
+.toolbar{max-width:620px;width:100%;display:flex;gap:10px;justify-content:flex-end;margin-bottom:14px;flex-wrap:wrap;}
+.tbtn{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.05em;padding:9px 15px;border-radius:10px;cursor:pointer;border:1.5px solid var(--line);background:#fff;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;}
+.tbtn:hover{border-color:var(--copper);color:var(--copper);}
+.tbtn.on{background:var(--copper);color:#fff;border-color:var(--copper);}
+.tbtn.save{background:var(--teal);color:#fff;border-color:var(--teal);display:none;}
+.tbtn.save:hover{background:var(--teal-bright);}
+.back{position:fixed;top:18px;left:18px;font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.05em;text-decoration:none;color:#5a6472;background:#f7f9fb;border:1px solid var(--line);border-radius:10px;padding:9px 14px;}
+.back:hover{color:var(--teal);border-color:var(--teal-bright);}
+body.editing [contenteditable]:hover{background:rgba(61,106,158,0.08);border-radius:6px;}
+[contenteditable]:focus{outline:none;background:#fff;box-shadow:0 0 0 2px var(--copper);border-radius:6px;padding:2px 6px;margin:-2px -6px;}
+.edit-hint{max-width:620px;width:100%;background:#eef3f9;border:1px solid var(--line);border-left:5px solid var(--teal-bright);border-radius:12px;padding:12px 16px;font-size:13px;color:#2a3a52;margin-bottom:14px;display:none;}
+body.editing .edit-hint{display:block;}
 </style></head><body>
 <a class="back" href="team-roster.html">← back to team</a>
+<div class="toolbar">
+  <a class="tbtn" href="teammate-intake.html" title="Change privacy settings or hidden fields">↻ Redo full intake</a>
+  <button class="tbtn" id="editToggle">✏️ Edit</button>
+  <button class="tbtn save" id="saveBtn">⬇ Download updated profile</button>
+</div>
+<div class="edit-hint" id="editHint">You're editing the visible fields — click any text to change it, then download. To change privacy levels, add hidden fields, or start fresh, use “Redo full intake.”</div>
 <div class="card">
-<h2>Diego Santos</h2><div class="role">Senior Engineer</div>
-<div class="tagline">"Steady hands on the hard parts. I'd rather build it right than build it twice."</div>
-<div class="field"><h4>Hours & timezone</h4><p>8–4 BRT (UTC−3). My focus block is the afternoon, 2–4, when the inbox goes quiet. Mornings are my most reachable.</p></div>
-<div class="field"><h4>How I communicate</h4><p>I lean heavily async and check messages in batches, not instantly — so if it's urgent, say so and tag me. I prefer written threads for anything technical so there's a record.</p></div>
-<div class="field"><h4>Feedback that works for me</h4><p>Gentle, with a bit of context. If something's off, walk me through the why — I take it well when I understand the reasoning.</p></div>
-<div class="field"><h4>In meetings</h4><p>I do better with a pre-read and tend to think first, then share. In big live meetings I'm quieter; I'll often follow up with better thoughts in writing afterward.</p></div>
-<div class="field"><h4>Strengths</h4><div class="chips"><span class="chip">Engineering</span><span class="chip">Systems thinking</span><span class="chip">Mentoring</span></div></div>
-<div class="field"><h4>What drains me / brings out my best</h4><p>Last-minute changes and unclear ownership are hard for me. I thrive with focused, uninterrupted time and a clear sense of who owns what.</p></div>
-<div class="field"><h4>Growing toward</h4><p>Deepening my architecture skills and growing into a tech-lead role.</p></div>
-<div class="field"><h4>Good to know</h4><p>English is my second language — I'm fully fluent, but in fast live discussions I appreciate a moment to formulate. Written channels help me contribute my best.</p></div>
-<div class="field"><h4>What helps me feel supported</h4><p>Knowing it's genuinely safe to ask questions. And a quick heads-up before big changes rather than finding out in the moment.</p></div>
-<div class="field"><h4>A little about me</h4><p>Ask me about my dog — a very opinionated border collie named Pilot.</p></div>
-</div></body></html>
+<h2 contenteditable="false" data-key="name">Diego Santos</h2><div class="role" contenteditable="false" data-key="role">Senior Engineer</div>
+<div class="tagline" contenteditable="false" data-key="tagline">"Steady hands on the hard parts. I'd rather build it right than build it twice."</div>
+<div class="field" data-field="hours"><h4>Hours & timezone</h4><p contenteditable="false" data-key="hours">8–4 BRT (UTC−3); focus block 2–4pm. Most reachable in the morning.</p></div>
+<div class="field" data-field="communication"><h4>How I communicate</h4><p contenteditable="false" data-key="communication">Async; I check messages in batches, not instantly. Prefer written threads for technical topics.</p></div>
+<div class="field" data-field="urgency"><h4>Urgent vs. non-urgent</h4><p contenteditable="false" data-key="urgency">Urgent: call or text me directly. Non-urgent: a written thread is best.</p></div>
+<div class="field" data-field="assignments"><h4>How I like to receive tasks</h4><p contenteditable="false" data-key="assignments">Written instructions with clear ownership; avoid last-minute verbal changes.</p></div>
+<div class="field" data-field="feedback"><h4>Feedback that works for me</h4><p contenteditable="false" data-key="feedback">Gentle, with context; walk me through the reasoning.</p></div>
+<div class="field" data-field="meetings"><h4>In meetings</h4><p contenteditable="false" data-key="meetings">I prefer a pre-read; I think first, share after. Quieter in big live meetings.</p></div>
+<div class="field" data-field="strengths"><h4>Strengths</h4><div class="chips"><span class="chip">Engineering</span><span class="chip">Systems thinking</span><span class="chip">Mentoring</span></div></div>
+<div class="field" data-field="stressors"><h4>What drains me / brings out my best</h4><p contenteditable="false" data-key="stressors">Last-minute changes and unclear ownership are hard. I thrive with focus time.</p></div>
+<div class="field" data-field="growth"><h4>Growing toward</h4><p contenteditable="false" data-key="growth">Deepening my architecture skills and growing into a tech-lead role.</p></div>
+
+<div class="field" data-field="support"><h4>What helps me feel supported</h4><p contenteditable="false" data-key="support">Knowing it's safe to ask questions, and a heads-up before big changes.</p></div>
+<div class="field" data-field="humanNote"><h4>A little about me</h4><p contenteditable="false" data-key="humanNote">Ask me about my dog — an opinionated border collie named Pilot.</p></div>
+<div class="priv-foot">🔒 1 field is set to Manager, AI-only, or Private and kept off this public profile — shared only through the manager view or used discreetly by the assistant, as Diego allowed.</div>
+</div>
+<script type="application/json" id="teamlens-profile">{"name":"Diego Santos","role":"Senior Engineer","fields":{"tagline":{"value":"Steady hands on the hard parts. I'd rather build it right than build it twice.","tier":"team"},"hours":{"value":"8–4 BRT (UTC−3); focus block 2–4pm. Most reachable in the morning.","tier":"team"},"communication":{"value":"Async; I check messages in batches, not instantly. Prefer written threads for technical topics.","tier":"team"},"urgency":{"value":"Urgent: call or text me directly. Non-urgent: a written thread is best.","tier":"team"},"assignments":{"value":"Written instructions with clear ownership; avoid last-minute verbal changes.","tier":"team"},"feedback":{"value":"Gentle, with context; walk me through the reasoning.","tier":"team"},"meetings":{"value":"I prefer a pre-read; I think first, share after. Quieter in big live meetings.","tier":"team"},"strengths":{"value":"Engineering, Systems thinking, Mentoring","tier":"team"},"stressors":{"value":"Last-minute changes and unclear ownership are hard. I thrive with focus time.","tier":"team"},"growth":{"value":"Deepening my architecture skills and growing into a tech-lead role.","tier":"team"},"considerations":{"value":"English is my second language — in fast live discussions I appreciate a moment to formulate; written channels help me contribute my best.","tier":"ai"},"support":{"value":"Knowing it's safe to ask questions, and a heads-up before big changes.","tier":"team"},"humanNote":{"value":"Ask me about my dog — an opinionated border collie named Pilot.","tier":"team"}}}</script>
+<script>
+(function(){
+  var editing=false;
+  var tgl=document.getElementById('editToggle'), sv=document.getElementById('saveBtn');
+  function setEdit(on){
+    editing=on;
+    document.body.classList.toggle('editing',on);
+    document.querySelectorAll('[contenteditable]').forEach(function(e){e.setAttribute('contenteditable',on?'true':'false');});
+    tgl.classList.toggle('on',on); tgl.textContent=on?'✓ Done':'✏️ Edit';
+    sv.style.display=on?'inline-flex':'none';
+  }
+  tgl.onclick=function(){setEdit(!editing);};
+  sv.onclick=function(){
+    // strip editing chrome and save a clean copy
+    var clone=document.documentElement.cloneNode(true);
+    var b=clone.querySelector('body'); if(b)b.classList.remove('editing');
+    clone.querySelectorAll('[contenteditable]').forEach(function(e){e.setAttribute('contenteditable','false');});
+    var tb=clone.querySelector('.toolbar'); if(tb){ var s=tb.querySelector('.save'); if(s)s.style.display='none'; var t=tb.querySelector('#editToggle'); if(t){t.classList.remove('on');t.textContent='✏️ Edit';} }
+    var html='<!DOCTYPE html>\n'+clone.outerHTML;
+    var blob=new Blob([html],{type:'text/html'});
+    var name=(clone.querySelector('[data-key="name"]')||{}).textContent||'teammate';
+    var slug=name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=slug+'-profile.html'; a.click();
+  };
+})();
+</script>
+</body></html>

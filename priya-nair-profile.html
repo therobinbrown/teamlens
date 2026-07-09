@@ -7,8 +7,6 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Albert Sans',sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;min-height:100vh;display:grid;place-items:center;padding:40px 20px;
 background-image:none;}
-.back{position:fixed;top:20px;left:20px;font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.05em;text-decoration:none;color:#5a6270;background:#f7f9fb;border:1px solid var(--line);border-radius:10px;padding:9px 15px;}
-.back:hover{color:var(--teal);border-color:var(--teal-bright);}
 .card{background:#f7f9fb;border:1px solid var(--line);border-radius:22px;padding:42px;max-width:620px;width:100%;box-shadow:0 16px 50px rgba(20,32,28,0.14);}
 h2{font-family:'Fraunces',serif;font-weight:900;font-size:38px;letter-spacing:-0.02em;}
 .role{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-bright);margin:5px 0 24px;}
@@ -16,21 +14,72 @@ h2{font-family:'Fraunces',serif;font-weight:900;font-size:38px;letter-spacing:-0
 .field{margin-bottom:20px;}
 .field h4{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--copper);margin-bottom:6px;}
 .field p{font-size:15.5px;color:#2e3833;}
+.mgr{font-family:'Spline Sans Mono',monospace;font-size:8.5px;letter-spacing:0.08em;background:#e2e0f0;color:#453a8c;padding:2px 6px;border-radius:5px;text-transform:uppercase;}
 .chips{display:flex;flex-wrap:wrap;gap:8px;}
 .chip{background:var(--paper-2);border:1px solid var(--line);border-radius:99px;padding:5px 14px;font-size:13.5px;}
+.priv-foot{margin-top:22px;padding-top:14px;border-top:1px dashed var(--line);font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:0.03em;color:#9aa2b0;}
+.toolbar{max-width:620px;width:100%;display:flex;gap:10px;justify-content:flex-end;margin-bottom:14px;flex-wrap:wrap;}
+.tbtn{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.05em;padding:9px 15px;border-radius:10px;cursor:pointer;border:1.5px solid var(--line);background:#fff;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;}
+.tbtn:hover{border-color:var(--copper);color:var(--copper);}
+.tbtn.on{background:var(--copper);color:#fff;border-color:var(--copper);}
+.tbtn.save{background:var(--teal);color:#fff;border-color:var(--teal);display:none;}
+.tbtn.save:hover{background:var(--teal-bright);}
+.back{position:fixed;top:18px;left:18px;font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.05em;text-decoration:none;color:#5a6472;background:#f7f9fb;border:1px solid var(--line);border-radius:10px;padding:9px 14px;}
+.back:hover{color:var(--teal);border-color:var(--teal-bright);}
+body.editing [contenteditable]:hover{background:rgba(61,106,158,0.08);border-radius:6px;}
+[contenteditable]:focus{outline:none;background:#fff;box-shadow:0 0 0 2px var(--copper);border-radius:6px;padding:2px 6px;margin:-2px -6px;}
+.edit-hint{max-width:620px;width:100%;background:#eef3f9;border:1px solid var(--line);border-left:5px solid var(--teal-bright);border-radius:12px;padding:12px 16px;font-size:13px;color:#2a3a52;margin-bottom:14px;display:none;}
+body.editing .edit-hint{display:block;}
 </style></head><body>
 <a class="back" href="team-roster.html">← back to team</a>
+<div class="toolbar">
+  <a class="tbtn" href="teammate-intake.html" title="Change privacy settings or hidden fields">↻ Redo full intake</a>
+  <button class="tbtn" id="editToggle">✏️ Edit</button>
+  <button class="tbtn save" id="saveBtn">⬇ Download updated profile</button>
+</div>
+<div class="edit-hint" id="editHint">You're editing the visible fields — click any text to change it, then download. To change privacy levels, add hidden fields, or start fresh, use “Redo full intake.”</div>
 <div class="card">
-<h2>Priya Nair</h2><div class="role">Product Designer</div>
-<div class="tagline">"I fall in love with the problem, not my first solution."</div>
-<div class="field"><h4>Hours & timezone</h4><p>10–6 IST (UTC+5:30). Mornings 10–12 are my focus time for design work; I'm most reachable in my afternoon, which overlaps with the team's morning.</p></div>
-<div class="field"><h4>How I communicate</h4><p>A mix — quick things in chat, but for design decisions I like to write them up so the thinking is visible. Same-day reply is my norm.</p></div>
-<div class="field"><h4>Feedback that works for me</h4><p>Scheduled and private, please, rather than a surprise in a group setting. Give me the context and I'll run with it.</p></div>
-<div class="field"><h4>In meetings</h4><p>I warm up more in smaller groups. In big meetings I contribute better when there's a pre-read and I've had time to form a view.</p></div>
-<div class="field"><h4>Strengths</h4><div class="chips"><span class="chip">Design</span><span class="chip">Research</span><span class="chip">Facilitation</span></div></div>
-<div class="field"><h4>What drains me / brings out my best</h4><p>Being interrupted mid-flow during focus time drains me. I do my best with clear priorities and space to go deep on one thing at a time.</p></div>
-<div class="field"><h4>Growing toward</h4><p>Building my product-strategy muscle so I can shape the 'what' and 'why,' not just the 'how.'</p></div>
-<div class="field"><h4>Good to know</h4><p>I'm on the far side of the timezone spread from most of the team, so I rely on clear written handoffs to stay in sync. I observe a few regional holidays the team calendar may not show.</p></div>
-<div class="field"><h4>What helps me feel supported</h4><p>Being brought into decisions early — my best contribution comes when I'm in the room while things are still open, not after.</p></div>
-<div class="field"><h4>A little about me</h4><p>Weekend hiker; I'm slowly working through every trail in the Western Ghats.</p></div>
-</div></body></html>
+<h2 contenteditable="false" data-key="name">Priya Nair</h2><div class="role" contenteditable="false" data-key="role">Product Designer</div>
+<div class="tagline" contenteditable="false" data-key="tagline">"I fall in love with the problem, not my first solution."</div>
+<div class="field" data-field="hours"><h4>Hours & timezone</h4><p contenteditable="false" data-key="hours">10–6 IST (UTC+5:30); focus 10–12. Most reachable in my afternoon (the team's morning).</p></div>
+<div class="field" data-field="communication"><h4>How I communicate</h4><p contenteditable="false" data-key="communication">A mix — quick things in chat, design decisions written up. Same-day reply.</p></div>
+<div class="field" data-field="urgency"><h4>Urgent vs. non-urgent</h4><p contenteditable="false" data-key="urgency">Urgent: chat message with a clear 'urgent' flag. Non-urgent: email or normal message.</p></div>
+<div class="field" data-field="assignments"><h4>How I like to receive tasks</h4><p contenteditable="false" data-key="assignments">Clear priorities and space to go deep on one thing at a time.</p></div>
+
+<div class="field" data-field="meetings"><h4>In meetings</h4><p contenteditable="false" data-key="meetings">I warm up in smaller groups; I contribute better with a pre-read.</p></div>
+<div class="field" data-field="strengths"><h4>Strengths</h4><div class="chips"><span class="chip">Design</span><span class="chip">Research</span><span class="chip">Facilitation</span></div></div>
+<div class="field" data-field="stressors"><h4>What drains me / brings out my best</h4><p contenteditable="false" data-key="stressors">Being interrupted mid-flow drains me. I do best with clear priorities.</p></div>
+<div class="field" data-field="growth"><h4>Growing toward</h4><p contenteditable="false" data-key="growth">Building my product-strategy muscle.</p></div>
+
+<div class="field" data-field="support"><h4>What helps me feel supported</h4><p contenteditable="false" data-key="support">Being brought into decisions early, while things are still open.</p></div>
+<div class="field" data-field="humanNote"><h4>A little about me</h4><p contenteditable="false" data-key="humanNote">Weekend hiker; working through every trail in the Western Ghats.</p></div>
+<div class="priv-foot">🔒 2 fields are set to Manager, AI-only, or Private and kept off this public profile — shared only through the manager view or used discreetly by the assistant, as Priya allowed.</div>
+</div>
+<script type="application/json" id="teamlens-profile">{"name":"Priya Nair","role":"Product Designer","fields":{"tagline":{"value":"I fall in love with the problem, not my first solution.","tier":"team"},"hours":{"value":"10–6 IST (UTC+5:30); focus 10–12. Most reachable in my afternoon (the team's morning).","tier":"team"},"communication":{"value":"A mix — quick things in chat, design decisions written up. Same-day reply.","tier":"team"},"urgency":{"value":"Urgent: chat message with a clear 'urgent' flag. Non-urgent: email or normal message.","tier":"team"},"assignments":{"value":"Clear priorities and space to go deep on one thing at a time.","tier":"team"},"feedback":{"value":"Scheduled and private, not a surprise in a group.","tier":"manager"},"meetings":{"value":"I warm up in smaller groups; I contribute better with a pre-read.","tier":"team"},"strengths":{"value":"Design, Research, Facilitation","tier":"team"},"stressors":{"value":"Being interrupted mid-flow drains me. I do best with clear priorities.","tier":"team"},"growth":{"value":"Building my product-strategy muscle.","tier":"team"},"considerations":{"value":"I'm on the far side of the timezone spread; I rely on written handoffs. I observe some regional holidays the team calendar may not show.","tier":"ai"},"support":{"value":"Being brought into decisions early, while things are still open.","tier":"team"},"humanNote":{"value":"Weekend hiker; working through every trail in the Western Ghats.","tier":"team"}}}</script>
+<script>
+(function(){
+  var editing=false;
+  var tgl=document.getElementById('editToggle'), sv=document.getElementById('saveBtn');
+  function setEdit(on){
+    editing=on;
+    document.body.classList.toggle('editing',on);
+    document.querySelectorAll('[contenteditable]').forEach(function(e){e.setAttribute('contenteditable',on?'true':'false');});
+    tgl.classList.toggle('on',on); tgl.textContent=on?'✓ Done':'✏️ Edit';
+    sv.style.display=on?'inline-flex':'none';
+  }
+  tgl.onclick=function(){setEdit(!editing);};
+  sv.onclick=function(){
+    // strip editing chrome and save a clean copy
+    var clone=document.documentElement.cloneNode(true);
+    var b=clone.querySelector('body'); if(b)b.classList.remove('editing');
+    clone.querySelectorAll('[contenteditable]').forEach(function(e){e.setAttribute('contenteditable','false');});
+    var tb=clone.querySelector('.toolbar'); if(tb){ var s=tb.querySelector('.save'); if(s)s.style.display='none'; var t=tb.querySelector('#editToggle'); if(t){t.classList.remove('on');t.textContent='✏️ Edit';} }
+    var html='<!DOCTYPE html>\n'+clone.outerHTML;
+    var blob=new Blob([html],{type:'text/html'});
+    var name=(clone.querySelector('[data-key="name"]')||{}).textContent||'teammate';
+    var slug=name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=slug+'-profile.html'; a.click();
+  };
+})();
+</script>
+</body></html>

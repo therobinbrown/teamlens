@@ -261,6 +261,7 @@ const PROFILE_PROMPT = `Based on the full conversation above, produce ONLY a JSO
   "tagline": "a short, warm one-liner in their own spirit",
   "hours": "their working hours, timezone, and when they're focused vs reachable",
   "communication": "how they prefer to communicate and expected response pace",
+  "assignments": "how they like to receive tasks or assignments",
   "urgency": "how to reach them for urgent vs non-urgent matters",
   "feedback": "how they like to receive feedback",
   "meetings": "their meeting participation preferences, framed positively",
@@ -282,6 +283,7 @@ const DEMO_SCRIPT = [
   {field:"communication", reaction:"That's really useful to know.", question:"How do you prefer to communicate day to day?", options:["Async first — write it down","Quick things in chat, big things in a call","I check messages in batches, not instantly","A same-day reply is my norm"], multi:true, optional:false},
   {field:"urgency", reaction:"Helpful to know how to reach you when it matters.", question:"How should people reach you for urgent things vs. things that can wait?", options:["Urgent: call or text me directly","Urgent: tag me in chat with 'urgent'","Non-urgent: email or a normal message is fine","Please don't mark things urgent unless they truly are"], multi:true, optional:false},
   {field:"feedback", reaction:"Makes sense.", question:"How do you like to receive feedback?", options:["Direct and in the moment","Gentle, with a bit of context","Scheduled, not surprise","In private rather than in a group","In writing so I can sit with it"], multi:true, optional:false},
+  {field:"assignments", reaction:"Good to know how to hand things off to you.", question:"When someone gives you a task or assignment, how do you like to receive it?", options:["Written, with clear context and the goal","A quick chat to talk it through","Just the outcome — let me figure out the how","Step-by-step details, not just the big picture","Clear deadline and priority up front"], multi:true, optional:false},
   {field:"meetings", reaction:"Good to know — that helps people include you well.", question:"How do you feel about participating in meetings? (No wrong answer — it just helps people bring you in the right way.)", options:["Happy to speak up live","I do better with a pre-read","I warm up more in small groups","I often think first, share after","Camera-off helps me focus"], multi:true, optional:true},
   {field:"strengths", reaction:"Love that.", question:"What are you genuinely good at — the things teammates come to you for?", options:["Strategy & big-picture thinking","Writing & communication","Facilitation","Problem-solving","Mentoring others","Getting into the details"], multi:true, optional:false},
   {field:"stressors", reaction:"Thank you — that's the kind of thing teams rarely say out loud.", question:"What tends to drain you at work, and what conditions bring out your best?", options:["Unclear priorities stress me out","Too many meetings drain me","I thrive with focused, uninterrupted time","Last-minute changes are hard for me","I do best with clear ownership"], multi:true, optional:false},
@@ -297,7 +299,7 @@ const demoAnswers={}; // field -> text
 // every question gets an in-the-moment privacy choice, defaulting to Team
 const FIELD_DEFAULT_TIER={
   hours:'team', communication:'team', urgency:'team', feedback:'team',
-  meetings:'team', strengths:'team', stressors:'team', growth:'team',
+  assignments:'team', meetings:'team', strengths:'team', stressors:'team', growth:'team',
   considerations:'team', support:'team', humanNote:'team'
 };
 // privacy tiers the person picks during intake (feeds the profile + review step)
@@ -333,6 +335,8 @@ function demoReaction(step, answer){
       return pick([`That's genuinely useful — "${echo}" tells people exactly how to reach you.`,`Great, that clears up a lot of little day-to-day friction.`]);
     case 'urgency':
       return pick([`Good — now people know how to reach you when it's actually urgent, and when it can wait.`,`That's really practical. Knowing your urgent vs. non-urgent channels prevents a lot of missed messages.`]);
+    case 'assignments':
+      return pick([`That's helpful — people will know how to hand work to you so it lands cleanly.`,`Good to know. Getting the handoff right saves a lot of back-and-forth.`]);
     case 'feedback':
       if(has(a,['direct','in the moment','clear']))return pick([`Straight and direct — refreshing. People will know they can be candid with you.`,`Got it: no cushioning needed. That's a gift to your teammates, honestly.`]);
       if(has(a,['gentle','context','private','writing']))return pick([`Thoughtful — a little care and context goes a long way. Noted.`,`That's good to know. Feedback lands better when it's delivered the way you need it.`]);
@@ -490,6 +494,7 @@ function currentPrivacyField(q){
   if(/urgent|non-urgent|reach you for/.test(t))return 'urgency';
   if(/communicate|communication|channel|async/.test(t))return 'communication';
   if(/feedback/.test(t))return 'feedback';
+  if(/task|assignment|instruction|hand you|receive it/.test(t))return 'assignments';
   if(/meeting|speak up|participat/.test(t))return 'meetings';
   if(/good at|strength|come to you/.test(t))return 'strengths';
   if(/drain|stress|brings out your best|energi/.test(t))return 'stressors';
@@ -579,6 +584,7 @@ function buildDemoProfile(){
     tagline:"", // left for the user to add in the editable draft
     hours:clean(demoAnswers.hours),
     communication:clean(demoAnswers.communication),
+    assignments:clean(demoAnswers.assignments),
     urgency:clean(demoAnswers.urgency),
     feedback:clean(demoAnswers.feedback),
     meetings:clean(demoAnswers.meetings),
@@ -659,6 +665,7 @@ function renderPreview(p){
     ${txtField('hours','Hours & timezone',p.hours)}
     ${txtField('communication','How I communicate',p.communication)}
     ${txtField('urgency','Urgent vs. non-urgent',p.urgency)}
+    ${txtField('assignments','How I like to receive tasks',p.assignments)}
     ${txtField('feedback','Feedback that works for me',p.feedback)}
     ${txtField('meetings','In meetings',p.meetings)}
     ${chipField('strengths','Strengths',p.strengths)}
@@ -746,7 +753,7 @@ function collectEdited(){
   const present=k=>card.querySelector(`.field[data-field="${k}"]`);
   const txt=k=>{const el=card.querySelector(`[data-key="${k}"]`);return el?el.innerText.trim():'';};
   out.name=txt('name'); out.role=txt('role');
-  ['tagline','hours','communication','urgency','feedback','meetings','stressors','growth','considerations','support','humanNote']
+  ['tagline','hours','communication','urgency','assignments','feedback','meetings','stressors','growth','considerations','support','humanNote']
     .forEach(k=>{ out[k]=present(k)?txt(k):''; });
   // strengths chips
   if(present('strengths')){
@@ -778,13 +785,14 @@ function buildProfilePage(p){
   const tierOf=k=>tiers[k]||'team';
   const arr=a=>Array.isArray(a)&&a.filter(Boolean).length>0;
   const C=a=>arr(a)?`<div class="chips">${a.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</div>`:'';
-  // a field renders visibly only if Team or Manager; Manager gets a small badge; AI-only/Private are hidden from the page.
-  const badge=k=>tierOf(k)==='manager'?` <span class="mgr">manager-visible</span>`:'';
-  const F=(key,label,inner)=>{ if(!inner)return ''; const t=tierOf(key); if(t==='ai'||t==='private')return ''; return `<div class="field"><h4>${label}${badge(key)}</h4>${inner}</div>`; };
-  // count what's hidden so we can note it honestly
+  // Only Team-tier fields appear on a standalone (public) profile page.
+  // A static page can't verify the viewer, so Manager/AI-only/Private are all withheld here.
+  const F=(key,label,inner)=>{ if(!inner)return ''; if(tierOf(key)!=='team')return ''; return `<div class="field" data-field="${key}"><h4>${label}</h4>${inner}</div>`; };
+  const P=(key,text)=>`<p contenteditable="false" data-key="${key}">${esc(text)}</p>`;
+  // count what's withheld (anything not Team) so we can note it honestly
   let hiddenCount=0;
-  const keys=['tagline','hours','communication','urgency','feedback','meetings','strengths','stressors','growth','considerations','support','humanNote'];
-  keys.forEach(k=>{ const has=(k==='strengths')?arr(p.strengths):!!p[k]; if(has&&(tierOf(k)==='ai'||tierOf(k)==='private'))hiddenCount++; });
+  const keys=['tagline','hours','communication','urgency','assignments','feedback','meetings','strengths','stressors','growth','considerations','support','humanNote'];
+  keys.forEach(k=>{ const has=(k==='strengths')?arr(p.strengths):!!p[k]; if(has&&tierOf(k)!=='team')hiddenCount++; });
   // embedded machine-readable profile (values + tiers) for the collaboration assistant
   const dataBlob = { name:p.name, role:p.role, fields:{} };
   keys.forEach(k=>{ const v=(k==='strengths')?(arr(p.strengths)?p.strengths.join(', '):''):(p[k]||''); if(v)dataBlob.fields[k]={value:v,tier:tierOf(k)}; });
@@ -809,23 +817,70 @@ h2{font-family:'Fraunces',serif;font-weight:900;font-size:38px;letter-spacing:-0
 .chips{display:flex;flex-wrap:wrap;gap:8px;}
 .chip{background:var(--paper-2);border:1px solid var(--line);border-radius:99px;padding:5px 14px;font-size:13.5px;}
 .priv-foot{margin-top:22px;padding-top:14px;border-top:1px dashed var(--line);font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:0.03em;color:#9aa2b0;}
-</style></head><body><div class="card">
-<h2>${esc(p.name)}</h2><div class="role">${esc(p.role)}</div>
-${p.tagline&&tierOf('tagline')!=='ai'&&tierOf('tagline')!=='private'?`<div class="tagline">"${esc(p.tagline)}"</div>`:''}
-${F('hours','Hours & timezone',p.hours?`<p>${esc(p.hours)}</p>`:'')}
-${F('communication','How I communicate',p.communication?`<p>${esc(p.communication)}</p>`:'')}
-${F('urgency','Urgent vs. non-urgent',p.urgency?`<p>${esc(p.urgency)}</p>`:'')}
-${F('feedback','Feedback that works for me',p.feedback?`<p>${esc(p.feedback)}</p>`:'')}
-${F('meetings','In meetings',p.meetings?`<p>${esc(p.meetings)}</p>`:'')}
+.toolbar{max-width:620px;width:100%;display:flex;gap:10px;justify-content:flex-end;margin-bottom:14px;flex-wrap:wrap;}
+.tbtn{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.05em;padding:9px 15px;border-radius:10px;cursor:pointer;border:1.5px solid var(--line);background:#fff;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;}
+.tbtn:hover{border-color:var(--copper);color:var(--copper);}
+.tbtn.on{background:var(--copper);color:#fff;border-color:var(--copper);}
+.tbtn.save{background:var(--teal);color:#fff;border-color:var(--teal);display:none;}
+.tbtn.save:hover{background:var(--teal-bright);}
+.back{position:fixed;top:18px;left:18px;font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.05em;text-decoration:none;color:#5a6472;background:#f7f9fb;border:1px solid var(--line);border-radius:10px;padding:9px 14px;}
+.back:hover{color:var(--teal);border-color:var(--teal-bright);}
+body.editing [contenteditable]:hover{background:rgba(61,106,158,0.08);border-radius:6px;}
+[contenteditable]:focus{outline:none;background:#fff;box-shadow:0 0 0 2px var(--copper);border-radius:6px;padding:2px 6px;margin:-2px -6px;}
+.edit-hint{max-width:620px;width:100%;background:#eef3f9;border:1px solid var(--line);border-left:5px solid var(--teal-bright);border-radius:12px;padding:12px 16px;font-size:13px;color:#2a3a52;margin-bottom:14px;display:none;}
+body.editing .edit-hint{display:block;}
+</style></head><body>
+<a class="back" href="team-roster.html">← back to team</a>
+<div class="toolbar">
+  <a class="tbtn" href="teammate-intake.html" title="Change privacy settings or hidden fields">↻ Redo full intake</a>
+  <button class="tbtn" id="editToggle">✏️ Edit</button>
+  <button class="tbtn save" id="saveBtn">⬇ Download updated profile</button>
+</div>
+<div class="edit-hint" id="editHint">You're editing the visible fields — click any text to change it, then download. To change privacy levels, add hidden fields, or start fresh, use “Redo full intake.”</div>
+<div class="card">
+<h2 contenteditable="false" data-key="name">${esc(p.name)}</h2><div class="role" contenteditable="false" data-key="role">${esc(p.role)}</div>
+${p.tagline&&tierOf('tagline')==='team'?`<div class="tagline" contenteditable="false" data-key="tagline">"${esc(p.tagline)}"</div>`:''}
+${F('hours','Hours & timezone',p.hours?P('hours',p.hours):'')}
+${F('communication','How I communicate',p.communication?P('communication',p.communication):'')}
+${F('urgency','Urgent vs. non-urgent',p.urgency?P('urgency',p.urgency):'')}
+${F('assignments','How I like to receive tasks',p.assignments?P('assignments',p.assignments):'')}
+${F('feedback','Feedback that works for me',p.feedback?P('feedback',p.feedback):'')}
+${F('meetings','In meetings',p.meetings?P('meetings',p.meetings):'')}
 ${F('strengths','Strengths',C(p.strengths))}
-${F('stressors','What drains me / brings out my best',p.stressors?`<p>${esc(p.stressors)}</p>`:'')}
-${F('growth','Growing toward',p.growth?`<p>${esc(p.growth)}</p>`:'')}
-${F('considerations','Good to know',p.considerations?`<p>${esc(p.considerations)}</p>`:'')}
-${F('support','What helps me feel supported',p.support?`<p>${esc(p.support)}</p>`:'')}
-${F('humanNote','A little about me',p.humanNote?`<p>${esc(p.humanNote)}</p>`:'')}
-${hiddenCount>0?`<div class="priv-foot">🔒 ${hiddenCount} field${hiddenCount>1?'s are':' is'} set to AI-only or Private and kept off this public profile — used by the collaboration assistant only as ${esc(p.name.split(' ')[0])} allowed.</div>`:''}
+${F('stressors','What drains me / brings out my best',p.stressors?P('stressors',p.stressors):'')}
+${F('growth','Growing toward',p.growth?P('growth',p.growth):'')}
+${F('considerations','Good to know',p.considerations?P('considerations',p.considerations):'')}
+${F('support','What helps me feel supported',p.support?P('support',p.support):'')}
+${F('humanNote','A little about me',p.humanNote?P('humanNote',p.humanNote):'')}
+${hiddenCount>0?`<div class="priv-foot">🔒 ${hiddenCount} field${hiddenCount>1?'s are':' is'} set to Manager, AI-only, or Private and kept off this public profile — shared only through the manager view or used discreetly by the assistant, as ${esc(p.name.split(' ')[0])} allowed.</div>`:''}
 </div>
 <script type="application/json" id="teamlens-profile">${JSON.stringify(dataBlob)}<\/script>
+<script>
+(function(){
+  var editing=false;
+  var tgl=document.getElementById('editToggle'), sv=document.getElementById('saveBtn');
+  function setEdit(on){
+    editing=on;
+    document.body.classList.toggle('editing',on);
+    document.querySelectorAll('[contenteditable]').forEach(function(e){e.setAttribute('contenteditable',on?'true':'false');});
+    tgl.classList.toggle('on',on); tgl.textContent=on?'✓ Done':'✏️ Edit';
+    sv.style.display=on?'inline-flex':'none';
+  }
+  tgl.onclick=function(){setEdit(!editing);};
+  sv.onclick=function(){
+    // strip editing chrome and save a clean copy
+    var clone=document.documentElement.cloneNode(true);
+    var b=clone.querySelector('body'); if(b)b.classList.remove('editing');
+    clone.querySelectorAll('[contenteditable]').forEach(function(e){e.setAttribute('contenteditable','false');});
+    var tb=clone.querySelector('.toolbar'); if(tb){ var s=tb.querySelector('.save'); if(s)s.style.display='none'; var t=tb.querySelector('#editToggle'); if(t){t.classList.remove('on');t.textContent='✏️ Edit';} }
+    var html='<!DOCTYPE html>\n'+clone.outerHTML;
+    var blob=new Blob([html],{type:'text/html'});
+    var name=(clone.querySelector('[data-key=\"name\"]')||{}).textContent||'teammate';
+    var slug=name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=slug+'-profile.html'; a.click();
+  };
+})();
+<\/script>
 </body></html>`;
 }
 
