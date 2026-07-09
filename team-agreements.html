@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How We Work — Team Agreements</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=Spline+Sans+Mono:wght@400;500;600&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c2230; --paper:#ffffff; --paper-2:#e9ecf1;
+    --copper:#3d6a9e; --copper-soft:#6b8cb5; --teal:#1a2b45;
+    --teal-bright:#3d6a9e; --line:#d3d8e0; --shadow:rgba(20,32,28,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  /* ---- shared site nav ---- */
+  .sitenav{position:sticky;top:0;z-index:100;background:#1a2b45;border-bottom:1px solid #16233b;}
+  .sitenav-inner{max-width:1000px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;gap:26px;flex-wrap:wrap;}
+  .sitenav .brand{font-family:'Fraunces',serif;font-weight:900;font-size:18px;letter-spacing:-0.01em;margin-right:auto;color:#ffffff;}
+  .sitenav .brand span{color:#7ea4d6;}
+  .sitenav a{font-family:'Spline Sans Mono',monospace;font-size:12.5px;letter-spacing:0.04em;text-decoration:none;color:#9db4d4;padding:6px 2px;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;}
+  .sitenav a:hover{color:#ffffff;}
+  .sitenav a.current{color:#ffffff;border-color:#7ea4d6;}
+  body{
+    font-family:'Albert Sans',sans-serif; background:var(--paper); color:var(--ink);
+    line-height:1.6;
+    background-image:none;
+  }
+
+  /* ---- Hero ---- */
+  .hero{max-width:1000px;margin:0 auto;padding:64px 32px 30px;position:relative;}
+  .eyebrow{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.3em;text-transform:uppercase;color:var(--copper);margin-bottom:16px;}
+  h1{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(44px,8vw,86px);line-height:0.95;letter-spacing:-0.025em;}
+  h1 em{font-style:italic;color:var(--teal);}
+  .lede{margin-top:22px;font-size:19px;max-width:60ch;color:#3c463f;}
+  .meta{margin-top:20px;font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.08em;color:#8a8275;display:flex;gap:20px;flex-wrap:wrap;align-items:center;}
+  .edit-toggle{
+    font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.06em;
+    background:var(--ink);color:var(--paper);border:none;border-radius:10px;padding:9px 16px;cursor:pointer;transition:background 0.2s;
+  }
+  .edit-toggle:hover{background:var(--teal);}
+  .edit-toggle.on{background:var(--copper);}
+
+  /* ---- Principles strip ---- */
+  .principles{max-width:1000px;margin:36px auto 0;padding:0 32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden;}
+  .principle{background:var(--paper);padding:26px 24px;}
+  .principle .num{font-family:'Spline Sans Mono',monospace;font-size:12px;color:var(--copper);letter-spacing:0.1em;}
+  .principle h3{font-family:'Fraunces',serif;font-weight:600;font-size:21px;margin:8px 0 6px;}
+  .principle p{font-size:14px;color:#5a635c;}
+
+  /* ---- Sections ---- */
+  main{max-width:1000px;margin:0 auto;padding:60px 32px 40px;}
+  .section{margin-bottom:54px;scroll-margin-top:24px;}
+  .section-num{font-family:'Spline Sans Mono',monospace;font-size:13px;letter-spacing:0.2em;color:var(--copper);}
+  .section-title{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(28px,4vw,38px);letter-spacing:-0.01em;margin:6px 0 10px;}
+  .section-intro{font-size:16.5px;color:#454e47;max-width:64ch;margin-bottom:26px;}
+
+  .agreements{display:flex;flex-direction:column;gap:14px;}
+  .agreement{
+    background:#f7f9fb;border:1px solid var(--line);border-radius:16px;padding:22px 24px;
+    display:flex;gap:18px;align-items:flex-start;position:relative;transition:border-color 0.2s;
+  }
+  .agreement:hover{border-color:var(--copper-soft);}
+  .marker{
+    flex-shrink:0;width:40px;height:40px;border-radius:11px;background:var(--teal);
+    display:grid;place-items:center;color:var(--paper);font-family:'Fraunces',serif;font-weight:600;font-size:18px;
+  }
+  .agreement-body{flex:1;}
+  .agreement-body h4{font-size:17px;font-weight:600;margin-bottom:4px;}
+  .agreement-body p{font-size:15px;color:#454e47;}
+  .agreement .remove{position:absolute;top:14px;right:16px;font-family:'Spline Sans Mono',monospace;font-size:11px;color:#b3aa98;cursor:pointer;letter-spacing:0.05em;display:none;}
+  .agreement .remove:hover{color:#c0392b;}
+  body.editing .agreement .remove{display:block;}
+  .add-row{display:none;margin-top:6px;}
+  body.editing .add-row{display:block;}
+  .add-btn{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.05em;background:transparent;border:1.5px dashed var(--line);border-radius:12px;padding:12px 18px;color:#8a8275;cursor:pointer;width:100%;}
+  .add-btn:hover{border-color:var(--copper);color:var(--copper);}
+
+  body.editing [contenteditable]{cursor:text;}
+  body.editing [contenteditable]:hover{background:rgba(107,140,181,0.10);border-radius:6px;}
+  [contenteditable]:focus{outline:none;background:#fff;box-shadow:0 0 0 2px var(--copper-soft);border-radius:6px;padding:1px 5px;margin:-1px -5px;}
+
+  /* ---- callout ---- */
+  .callout{background:var(--teal);color:var(--paper);border-radius:20px;padding:38px;margin:10px auto 0;max-width:1000px;}
+  .callout h3{font-family:'Fraunces',serif;font-weight:600;font-size:26px;margin-bottom:10px;}
+  .callout p{font-size:16px;opacity:0.92;max-width:62ch;}
+
+  footer{max-width:1000px;margin:0 auto;padding:40px 32px 80px;}
+  .save-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+  .save-btn{font-family:'Spline Sans Mono',monospace;font-size:13px;letter-spacing:0.05em;padding:13px 22px;border-radius:12px;cursor:pointer;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);}
+  .save-btn:hover{background:var(--teal);border-color:var(--teal);}
+  .save-hint{font-size:13px;color:#8a8275;font-style:italic;}
+  .credit{margin-top:30px;font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.1em;color:#9a9286;}
+</style>
+</head>
+<body>
+<nav class="sitenav">
+  <div class="sitenav-inner">
+    <div class="brand">Team<span>Lens</span></div>
+    <a href="onboarding-hub.html">Start here</a>
+    <a href="teammate-intake.html">Introduce yourself</a>
+    <a href="team-roster.html">The team</a>
+    <a href="team-agreements.html" class="current">How we work</a>
+    <a href="playbook.html">Playbook</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="assistant.html">Assistant</a>
+  </div>
+</nav>
+<div class="hero">
+  <div class="eyebrow">How we work together</div>
+  <h1>Our <em>working agreements</em>.</h1>
+  <p class="lede">The shared norms that let a distributed team move fast without everyone being online at once. These aren't rules handed down — they're agreements we keep, revisit, and reshape together.</p>
+  <div class="meta">
+    <span>Last updated: <span contenteditable>June 2026</span></span>
+    <button class="edit-toggle" id="editToggle">✏️ Edit mode</button>
+  </div>
+</div>
+
+<div class="principles">
+  <div class="principle"><div class="num">01</div><h3 contenteditable>Async first</h3><p contenteditable>Default to writing it down so anyone can catch up.</p></div>
+  <div class="principle"><div class="num">02</div><h3 contenteditable>Clarity over speed</h3><p contenteditable>A clear message beats a fast, confusing one.</p></div>
+  <div class="principle"><div class="num">03</div><h3 contenteditable>Trust by default</h3><p contenteditable>Assume good intent; read each other generously.</p></div>
+  <div class="principle"><div class="num">04</div><h3 contenteditable>Work in the open</h3><p contenteditable>Share drafts early; visibility beats surprises.</p></div>
+</div>
+
+<main id="sections"></main>
+
+<div class="callout">
+  <h3 contenteditable>These agreements are living.</h3>
+  <p contenteditable>If something here stops serving us, say so. We revisit these together — bring it up in a retro, a team sync, or just start a thread. The goal is a team that works well for everyone on it, not a rulebook nobody questions.</p>
+</div>
+
+<footer>
+  <div class="save-row">
+    <button class="save-btn" id="saveBtn">⬇ Download this page</button>
+    <span class="save-hint">Edits live in this browser tab only. Download to save a copy or host the file for the team.</span>
+  </div>
+  <div class="credit">TEAM WORKING AGREEMENTS · EDITABLE TEMPLATE</div>
+</footer>
+
+<script>
+/* ====== SEED CONTENT (edit freely, or use Edit mode in the page) ====== */
+const SECTIONS = [
+  {
+    title:"Communication",
+    intro:"Right channel, right speed. The medium should match how lasting and how urgent the message is.",
+    items:[
+      ["Match the channel to the need","Chat for quick and real-time, docs for anything important or lasting, email for external. Nothing critical lives only in DMs."],
+      ["Reasonable, not instant","Within one working day is the norm for non-urgent messages. If something is truly time-sensitive, say so explicitly and tag the person."],
+      ["Write for someone catching up later","Give enough context that a teammate reading hours later — in another timezone — understands without asking. Link the doc, name the decision."],
+      ["Default to public channels","Post in shared channels over DMs when others might benefit or need the context. It keeps knowledge findable."],
+    ]
+  },
+  {
+    title:"Meetings",
+    intro:"Meetings are for decisions, alignment, and human connection — not status updates that could be a message.",
+    items:[
+      ["Agenda or it doesn't happen","Every meeting has a doc with a purpose and agenda shared ahead of time. No agenda, no meeting."],
+      ["Record and write notes","We capture decisions and notes so people who couldn't attend — or were in a different timezone — stay in the loop."],
+      ["Cameras encouraged, never required","Show up however you do your best thinking. Presence isn't measured by a video feed."],
+      ["Protect focus time","We keep meeting-free blocks so deep work has room. Respect each other's calendars and stated focus hours."],
+    ]
+  },
+  {
+    title:"Working across timezones",
+    intro:"We're distributed by design. The aim is to make distance an advantage, not a tax on a few people.",
+    items:[
+      ["Rotate the burden","When a live sync is unavoidable, rotate the inconvenient hours so the same people aren't always staying late or starting early."],
+      ["Hand off, don't wait","Leave clear written handoffs at the end of your day so work can continue while you're offline."],
+      ["Respect stated hours","Everyone's working hours and focus times live on their profile and calendar. Don't expect replies outside them."],
+    ]
+  },
+  {
+    title:"Decisions & ownership",
+    intro:"Clear ownership and a visible trail keep a distributed team moving without bottlenecks.",
+    items:[
+      ["Name the owner","Every meaningful piece of work has one clear owner. Shared ownership quietly becomes no ownership."],
+      ["Decide in writing","Capture decisions where others can find them — what was decided, why, and who made the call."],
+      ["Disagree and commit","Voice concerns while a decision is open. Once it's made, get behind it — and trust we'll revisit if it's not working."],
+    ]
+  },
+  {
+    title:"Care & inclusion",
+    intro:"How we treat each other is itself a working agreement. This is what makes the rest sustainable.",
+    items:[
+      ["Assume good intent","Tone is hard in text. Read generously, ask before assuming, and move anything heated to a call."],
+      ["Honor how people work","Everyone shares how they like feedback, communicate, and feel supported. Use it — that awareness is the whole point."],
+      ["Make space for everyone","Notice who hasn't spoken. Invite quieter voices, especially across the distance and timezone gaps where it's easy to be overlooked."],
+      ["Rest is respected","Time off is time off. We don't reward always-on, and we cover for each other so people can fully unplug."],
+    ]
+  },
+];
+
+/* ====== RENDER ====== */
+const main=document.getElementById('sections');
+SECTIONS.forEach((sec,si)=>{
+  const el=document.createElement('section');el.className='section';
+  let rows='';
+  sec.items.forEach((it,ii)=>{
+    rows+=`<div class="agreement">
+      <div class="marker">${ii+1}</div>
+      <div class="agreement-body">
+        <h4 contenteditable>${esc(it[0])}</h4>
+        <p contenteditable>${esc(it[1])}</p>
+      </div>
+      <span class="remove" title="Remove">remove ✕</span>
+    </div>`;
+  });
+  el.innerHTML=`
+    <div class="section-num">${String(si+1).padStart(2,'0')}</div>
+    <h2 class="section-title" contenteditable>${esc(sec.title)}</h2>
+    <p class="section-intro" contenteditable>${esc(sec.intro)}</p>
+    <div class="agreements">${rows}</div>
+    <div class="add-row"><button class="add-btn">+ add an agreement</button></div>
+  `;
+  main.appendChild(el);
+});
+
+function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+/* ====== EDIT MODE ====== */
+const toggle=document.getElementById('editToggle');
+let editing=false;
+function setEditable(on){
+  document.querySelectorAll('[contenteditable]').forEach(e=>e.setAttribute('contenteditable',on?'true':'false'));
+}
+setEditable(false);
+toggle.onclick=()=>{
+  editing=!editing;
+  document.body.classList.toggle('editing',editing);
+  setEditable(editing);
+  toggle.classList.toggle('on',editing);
+  toggle.textContent=editing?'✓ Done editing':'✏️ Edit mode';
+};
+
+/* remove + add agreements (event delegation) */
+main.addEventListener('click',e=>{
+  if(e.target.classList.contains('remove')){
+    e.target.closest('.agreement').remove();
+    renumber();
+  }
+  if(e.target.classList.contains('add-btn')){
+    const wrap=e.target.closest('.section').querySelector('.agreements');
+    const div=document.createElement('div');div.className='agreement';
+    div.innerHTML=`<div class="marker"></div>
+      <div class="agreement-body"><h4 contenteditable="true">New agreement</h4><p contenteditable="true">Describe it here.</p></div>
+      <span class="remove" title="Remove">remove ✕</span>`;
+    wrap.appendChild(div);
+    renumber();
+    div.querySelector('h4').focus();
+  }
+});
+function renumber(){
+  document.querySelectorAll('.agreements').forEach(g=>{
+    g.querySelectorAll('.agreement .marker').forEach((m,i)=>m.textContent=i+1);
+  });
+}
+
+/* ====== DOWNLOAD a clean copy ====== */
+document.getElementById('saveBtn').onclick=()=>{
+  // turn off edit mode so the saved file opens in read mode
+  if(editing)toggle.click();
+  const clone=document.documentElement.cloneNode(true);
+  // strip live editability from the saved copy's body class
+  clone.querySelector('body').classList.remove('editing');
+  const html='<!DOCTYPE html>\n'+clone.outerHTML;
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='team-working-agreements.html';
+  a.click();
+};
+</script>
+</body>
+</html>

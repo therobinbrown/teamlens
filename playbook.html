@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playbook — Meetings & Async</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=Spline+Sans+Mono:wght@400;500;600&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c2230; --paper:#ffffff; --paper-2:#e9ecf1;
+    --copper:#3d6a9e; --copper-soft:#6b8cb5; --teal:#1a2b45;
+    --teal-bright:#3d6a9e; --line:#d3d8e0; --shadow:rgba(20,32,28,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Albert Sans',sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;
+    background-image:none;}
+
+  .sitenav{position:sticky;top:0;z-index:100;background:#1a2b45;border-bottom:1px solid #16233b;}
+  .sitenav-inner{max-width:1000px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+  .sitenav .brand{font-family:'Fraunces',serif;font-weight:900;font-size:18px;letter-spacing:-0.01em;margin-right:auto;color:#ffffff;}
+  .sitenav .brand span{color:#7ea4d6;}
+  .sitenav a{font-family:'Spline Sans Mono',monospace;font-size:12.5px;letter-spacing:0.04em;text-decoration:none;color:#9db4d4;padding:6px 2px;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;}
+  .sitenav a:hover{color:#ffffff;}
+  .sitenav a.current{color:#ffffff;border-color:#7ea4d6;}
+
+  .hero{max-width:1000px;margin:0 auto;padding:64px 32px 26px;}
+  .eyebrow{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.3em;text-transform:uppercase;color:var(--copper);margin-bottom:16px;}
+  h1{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(44px,8vw,86px);line-height:0.95;letter-spacing:-0.025em;}
+  h1 em{font-style:italic;color:var(--teal);}
+  .lede{margin-top:22px;font-size:19px;max-width:60ch;color:#3c463f;}
+
+  /* jump links */
+  .jump{max-width:1000px;margin:30px auto 0;padding:0 32px;display:flex;gap:10px;flex-wrap:wrap;}
+  .jump a{font-family:'Spline Sans Mono',monospace;font-size:12.5px;letter-spacing:0.04em;text-decoration:none;color:#5a635c;border:1.5px solid var(--line);border-radius:99px;padding:9px 16px;transition:all 0.2s;}
+  .jump a:hover{border-color:var(--copper);color:var(--copper);}
+
+  main{max-width:1000px;margin:0 auto;padding:50px 32px 60px;}
+
+  /* quick rules of thumb */
+  .rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-bottom:60px;}
+  .rule{background:var(--paper);padding:24px;}
+  .rule h4{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--copper);margin-bottom:8px;}
+  .rule p{font-size:14.5px;color:#454e47;}
+  .rule strong{color:var(--ink);}
+
+  .tpl{margin-bottom:46px;scroll-margin-top:80px;}
+  .tpl-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:6px;flex-wrap:wrap;}
+  .tpl-title{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(26px,4vw,34px);letter-spacing:-0.01em;}
+  .tpl-when{font-size:15px;color:#5a635c;margin-bottom:16px;max-width:66ch;}
+  .copy{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.05em;background:var(--ink);color:var(--paper);border:none;border-radius:10px;padding:10px 16px;cursor:pointer;transition:background 0.2s;white-space:nowrap;}
+  .copy:hover{background:var(--teal);}
+  .copy.done{background:var(--copper);}
+  pre{background:#f7f9fb;border:1px solid var(--line);border-left:5px solid var(--teal);border-radius:14px;padding:24px 26px;overflow-x:auto;font-family:'Spline Sans Mono',monospace;font-size:13.5px;line-height:1.7;color:#2e3833;white-space:pre-wrap;}
+
+  .callout{background:var(--teal);color:var(--paper);border-radius:20px;padding:36px;margin-top:20px;}
+  .callout h3{font-family:'Fraunces',serif;font-weight:600;font-size:24px;margin-bottom:10px;}
+  .callout p{font-size:16px;opacity:0.92;max-width:62ch;}
+  .callout a{color:var(--copper-soft);font-weight:600;text-decoration:underline;}
+
+  footer{text-align:center;padding:30px;font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.1em;color:#9a9286;}
+</style>
+</head>
+<body>
+<nav class="sitenav">
+  <div class="sitenav-inner">
+    <div class="brand">Team<span>Lens</span></div>
+    <a href="onboarding-hub.html">Start here</a>
+    <a href="teammate-intake.html">Introduce yourself</a>
+    <a href="team-roster.html">The team</a>
+    <a href="team-agreements.html">How we work</a>
+    <a href="playbook.html" class="current">Playbook</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="assistant.html">Assistant</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow">Meetings & async</div>
+  <h1>The <em>playbook</em>.</h1>
+  <p class="lede">Our working agreements, made practical. Copy-paste templates for the things we do every week — so good meetings and clear async communication become the easy default, not extra work.</p>
+</div>
+
+<div class="jump">
+  <a href="#agenda">Meeting agenda</a>
+  <a href="#notes">Meeting notes</a>
+  <a href="#decision">Decision doc</a>
+  <a href="#standup">Async update</a>
+  <a href="#handoff">Handoff</a>
+</div>
+
+<main>
+  <div class="rules">
+    <div class="rule"><h4>Before you book a meeting</h4><p>Ask: <strong>could this be a message?</strong> If a written update or thread would do, write it instead.</p></div>
+    <div class="rule"><h4>No agenda, no meeting</h4><p>If there's nothing to decide or align on, there's nothing to meet about. Send the agenda ahead of time.</p></div>
+    <div class="rule"><h4>Default to writing</h4><p>Decisions and updates go in a place others can find later — especially teammates in other timezones.</p></div>
+    <div class="rule"><h4>Close the loop</h4><p>Every meeting ends with decisions, owners, and next steps written down and shared.</p></div>
+  </div>
+
+  <!-- AGENDA -->
+  <section class="tpl" id="agenda">
+    <div class="tpl-head">
+      <div class="tpl-title">Meeting agenda</div>
+      <button class="copy" data-target="t-agenda">⧉ Copy</button>
+    </div>
+    <p class="tpl-when">Share this before the meeting. If you can't fill in a purpose and at least one decision or discussion item, the meeting probably isn't needed yet.</p>
+<pre id="t-agenda">Meeting: [name]
+Date / time: [date] · [start–end, with timezones]
+Owner: [who's running it]
+Attendees: [names — keep it to people who need to be here]
+
+PURPOSE (one sentence)
+Why we're meeting and what "done" looks like.
+
+PRE-READ (optional)
+[Link any doc people should read first, so we don't read live.]
+
+AGENDA
+1. [Topic] — [decision needed / discussion / update] — [X min]
+2. [Topic] — [decision needed / discussion / update] — [X min]
+3. [Topic] — [decision needed / discussion / update] — [X min]
+
+DECISIONS & NEXT STEPS
+(Fill in live — see the Meeting notes template.)</pre>
+  </section>
+
+  <!-- NOTES -->
+  <section class="tpl" id="notes">
+    <div class="tpl-head">
+      <div class="tpl-title">Meeting notes</div>
+      <button class="copy" data-target="t-notes">⧉ Copy</button>
+    </div>
+    <p class="tpl-when">Capture these live and share right after, so people who couldn't attend — or were offline — stay in the loop.</p>
+<pre id="t-notes">Meeting: [name] · [date]
+Attendees: [names]   ·   Couldn't attend: [names]
+
+DECISIONS
+- [What was decided] — decided by [who]
+- [What was decided] — decided by [who]
+
+ACTION ITEMS
+- [ ] [Task] — owner: [name] — due: [date]
+- [ ] [Task] — owner: [name] — due: [date]
+
+DISCUSSION (brief)
+- [Key point or open question worth remembering]
+
+PARKED / FOLLOW UP
+- [Anything we didn't get to]</pre>
+  </section>
+
+  <!-- DECISION DOC -->
+  <section class="tpl" id="decision">
+    <div class="tpl-head">
+      <div class="tpl-title">Decision doc</div>
+      <button class="copy" data-target="t-decision">⧉ Copy</button>
+    </div>
+    <p class="tpl-when">For decisions worth recording. Lets people weigh in async and gives future-you the "why" behind the call.</p>
+<pre id="t-decision">DECISION: [short title]
+Status: [Proposed / Decided / Revisiting]
+Owner: [who makes the final call]
+Date: [date]
+
+CONTEXT
+What's the situation and why does a decision need to be made now?
+
+OPTIONS CONSIDERED
+1. [Option] — pros / cons
+2. [Option] — pros / cons
+
+RECOMMENDATION
+[The proposed path and why.]
+
+DECISION
+[What we're doing. Disagree-and-commit applies once this is set.]
+
+INPUT WELCOME UNTIL: [date — give async folks time to weigh in]</pre>
+  </section>
+
+  <!-- ASYNC UPDATE -->
+  <section class="tpl" id="standup">
+    <div class="tpl-head">
+      <div class="tpl-title">Async update / standup</div>
+      <button class="copy" data-target="t-standup">⧉ Copy</button>
+    </div>
+    <p class="tpl-when">Post in your team channel instead of a live standup. Quick to write, easy to scan, and it works no matter what hours people keep.</p>
+<pre id="t-standup">📌 Update — [your name] · [date]
+
+DONE
+- [What you shipped / moved forward since last update]
+
+DOING
+- [What you're focused on next]
+
+BLOCKED / NEED
+- [Anything in your way, or where you need input — tag the person]
+  (Write "nothing" if you're clear — it's useful to know too.)</pre>
+  </section>
+
+  <!-- HANDOFF -->
+  <section class="tpl" id="handoff">
+    <div class="tpl-head">
+      <div class="tpl-title">End-of-day handoff</div>
+      <button class="copy" data-target="t-handoff">⧉ Copy</button>
+    </div>
+    <p class="tpl-when">When work needs to continue across timezones, leave a clear handoff so the next person can pick it up without waiting for you to come online.</p>
+<pre id="t-handoff">🤝 Handoff — [your name] → [next person / team] · [date]
+
+WHERE THINGS STAND
+[Brief status of the work in flight.]
+
+READY TO PICK UP
+- [Task that's unblocked and ready to go]
+- [Link to the doc / branch / ticket]
+
+WAITING ON
+- [Anything blocked, and on whom]
+
+NOTES
+[Context the next person needs — gotchas, decisions made, who to ask.]</pre>
+  </section>
+
+  <div class="callout">
+    <h3>Adapt these freely.</h3>
+    <p>These are starting points, not mandates — trim what you don't need. They put our <a href="team-agreements.html">working agreements</a> into practice, and they work best alongside each person's preferences on the <a href="team-roster.html">roster</a> (someone who reflects before speaking will value that pre-read; someone in a far timezone will lean on the handoff).</p>
+  </div>
+</main>
+
+<footer>TEAM PLAYBOOK · EDITABLE TEMPLATE</footer>
+
+<script>
+document.querySelectorAll('.copy').forEach(btn=>{
+  btn.onclick=async()=>{
+    const text=document.getElementById(btn.dataset.target).innerText;
+    try{
+      await navigator.clipboard.writeText(text);
+    }catch(e){
+      // fallback for environments without clipboard API
+      const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();
+      try{document.execCommand('copy');}catch(_){}
+      ta.remove();
+    }
+    const orig=btn.textContent;
+    btn.textContent='✓ Copied';btn.classList.add('done');
+    setTimeout(()=>{btn.textContent=orig;btn.classList.remove('done');},1600);
+  };
+});
+</script>
+</body>
+</html>

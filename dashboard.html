@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=Spline+Sans+Mono:wght@400;500;600&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c2230; --paper:#ffffff; --paper-2:#e9ecf1;
+    --copper:#3d6a9e; --copper-soft:#6b8cb5; --teal:#1a2b45;
+    --teal-bright:#3d6a9e; --line:#d3d8e0; --shadow:rgba(20,32,28,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Albert Sans',sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;
+    background-image:none;}
+
+  .sitenav{position:sticky;top:0;z-index:100;background:#1a2b45;border-bottom:1px solid #16233b;}
+  .sitenav-inner{max-width:1100px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;gap:22px;flex-wrap:wrap;}
+  .sitenav .brand{font-family:'Fraunces',serif;font-weight:900;font-size:18px;letter-spacing:-0.01em;margin-right:auto;color:#ffffff;}
+  .sitenav .brand span{color:#7ea4d6;}
+  .sitenav a{font-family:'Spline Sans Mono',monospace;font-size:12.5px;letter-spacing:0.04em;text-decoration:none;color:#9db4d4;padding:6px 2px;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;}
+  .sitenav a:hover{color:#ffffff;}
+  .sitenav a.current{color:#ffffff;border-color:#7ea4d6;}
+
+  .hero{max-width:1100px;margin:0 auto;padding:56px 32px 18px;}
+  .eyebrow{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.3em;text-transform:uppercase;color:var(--copper);margin-bottom:14px;}
+  h1{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(40px,7vw,74px);line-height:0.96;letter-spacing:-0.025em;}
+  h1 em{font-style:italic;color:var(--teal);}
+  .lede{margin-top:18px;font-size:18px;max-width:62ch;color:#3c463f;}
+  .note{max-width:1100px;margin:18px auto 0;padding:0 32px;}
+  .note-inner{background:var(--paper-2);border:1px solid var(--line);border-left:5px solid var(--teal);border-radius:12px;padding:14px 18px;font-size:13.5px;color:#3c463f;}
+
+  main{max-width:1100px;margin:0 auto;padding:36px 32px 70px;}
+  .panel{background:#f7f9fb;border:1px solid var(--line);border-radius:20px;padding:30px;margin-bottom:24px;}
+  .panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:6px;}
+  .panel-title{font-family:'Fraunces',serif;font-weight:600;font-size:25px;letter-spacing:-0.01em;}
+  .panel-sub{font-size:14px;color:#5a635c;margin-bottom:22px;max-width:64ch;}
+
+  /* stat strip */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:24px;}
+  .stat{background:#f7f9fb;border:1px solid var(--line);border-radius:16px;padding:22px 24px;}
+  .stat .big{font-family:'Fraunces',serif;font-weight:900;font-size:40px;line-height:1;color:var(--teal);}
+  .stat .lbl{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#5a635c;margin-top:8px;}
+
+  /* timezone grid */
+  .tz-wrap{overflow-x:auto;}
+  .tz-grid{min-width:760px;}
+  .tz-hours{display:grid;grid-template-columns:130px repeat(24,1fr);gap:2px;margin-bottom:6px;}
+  .tz-hours .corner{font-family:'Spline Sans Mono',monospace;font-size:10px;color:#8a8275;display:flex;align-items:flex-end;}
+  .tz-hours .h{font-family:'Spline Sans Mono',monospace;font-size:9.5px;color:#8a8275;text-align:center;}
+  .tz-row{display:grid;grid-template-columns:130px repeat(24,1fr);gap:2px;margin-bottom:3px;align-items:center;}
+  .tz-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:6px;}
+  .tz-name small{display:block;font-family:'Spline Sans Mono',monospace;font-size:9.5px;font-weight:400;color:#8a8275;letter-spacing:0.04em;}
+  .cell{height:22px;border-radius:4px;background:var(--paper-2);}
+  .cell.work{background:var(--copper-soft);}
+  .cell.focus{background:var(--teal);}
+  .overlap-row .cell{height:14px;border-radius:3px;background:transparent;}
+  .overlap-row .cell.ov{background:var(--teal-bright);}
+  .overlap-row .tz-name{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal-bright);font-weight:600;}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;font-size:12.5px;color:#5a635c;}
+  .legend span{display:inline-flex;align-items:center;gap:7px;}
+  .sw{width:14px;height:14px;border-radius:4px;display:inline-block;}
+  .best-window{margin-top:16px;font-size:14.5px;color:#2e3833;background:var(--paper-2);border-radius:10px;padding:12px 16px;}
+  .best-window strong{color:var(--teal);}
+
+  /* prefs grid */
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th,td{text-align:left;padding:12px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  th{font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--copper);font-weight:500;}
+  td .person{font-weight:600;}
+  .pill{display:inline-block;font-size:12px;padding:3px 10px;border-radius:99px;background:var(--paper-2);border:1px solid var(--line);}
+
+  /* meeting comfort bars */
+  .comfort{display:flex;flex-direction:column;gap:12px;}
+  .comfort-row{display:grid;grid-template-columns:130px 1fr auto;gap:14px;align-items:center;}
+  .comfort-row .nm{font-size:14px;font-weight:600;}
+  .track{height:10px;background:var(--paper-2);border-radius:99px;overflow:hidden;}
+  .track-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--copper-soft),var(--teal));}
+  .comfort-row .tag{font-family:'Spline Sans Mono',monospace;font-size:11px;color:#5a635c;white-space:nowrap;}
+
+  /* strengths */
+  .cloud{display:flex;flex-wrap:wrap;gap:10px;}
+  .scluster{background:var(--paper-2);border:1px solid var(--line);border-radius:99px;padding:8px 16px;font-size:14px;}
+  .scluster b{color:var(--teal);font-weight:700;margin-left:4px;}
+
+  /* roster editor */
+  .members{display:flex;flex-direction:column;gap:10px;}
+  .member-row{display:grid;grid-template-columns:1fr 1fr auto auto auto;gap:10px;align-items:center;background:#f7f9fb;border:1px solid var(--line);border-radius:12px;padding:12px 14px;}
+  .member-row input,.member-row select{font-family:'Albert Sans',sans-serif;font-size:13.5px;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink);width:100%;}
+  .member-row input:focus,.member-row select:focus{outline:none;border-color:var(--copper);}
+  .mini{font-family:'Spline Sans Mono',monospace;font-size:11px;color:#b3aa98;cursor:pointer;}
+  .mini:hover{color:#c0392b;}
+  .add-member{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.05em;background:transparent;border:1.5px dashed var(--line);border-radius:12px;padding:12px;color:#8a8275;cursor:pointer;width:100%;margin-top:10px;}
+  .add-member:hover{border-color:var(--copper);color:var(--copper);}
+  details{margin-top:10px;}
+  summary{cursor:pointer;font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.05em;color:var(--teal-bright);padding:8px 0;}
+  .ed-head{display:grid;grid-template-columns:1fr 1fr auto auto auto;gap:10px;font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#8a8275;padding:0 14px 4px;}
+
+  footer{text-align:center;padding:30px;font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.1em;color:#9a9286;}
+</style>
+</head>
+<body>
+<nav class="sitenav">
+  <div class="sitenav-inner">
+    <div class="brand">Team<span>Lens</span></div>
+    <a href="onboarding-hub.html">Start here</a>
+    <a href="teammate-intake.html">Introduce yourself</a>
+    <a href="team-roster.html">The team</a>
+    <a href="team-agreements.html">How we work</a>
+    <a href="playbook.html">Playbook</a>
+    <a href="dashboard.html" class="current">Dashboard</a>
+    <a href="assistant.html">Assistant</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow">For managers</div>
+  <h1>The team, <em>at a glance</em>.</h1>
+  <p class="lede">Patterns across the team that are hard to see one profile at a time — when everyone overlaps, how people like feedback, who needs space to contribute, and where the team's strengths cluster. The goal is to lead with awareness, not to rank anyone.</p>
+</div>
+<div class="note"><div class="note-inner">This view is powered by the team data below — seeded with examples you can edit. In a hosted version with saved profiles, it would populate automatically from each person's intro.</div></div>
+
+<main>
+  <!-- STATS -->
+  <div class="stats" id="stats"></div>
+
+  <!-- TIMEZONE OVERLAP -->
+  <div class="panel">
+    <div class="panel-head"><div class="panel-title">When we overlap</div></div>
+    <p class="panel-sub">Each person's working hours in their own local time, aligned to a shared reference (UTC). The bottom row shows when the most people are online together — your best windows for live collaboration.</p>
+    <div class="tz-wrap"><div class="tz-grid" id="tzGrid"></div></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--copper-soft)"></i> Working hours</span>
+      <span><i class="sw" style="background:var(--teal)"></i> Focus / heads-down</span>
+      <span><i class="sw" style="background:var(--teal-bright)"></i> Team overlap</span>
+    </div>
+    <div class="best-window" id="bestWindow"></div>
+  </div>
+
+  <!-- FEEDBACK PREFS -->
+  <div class="panel">
+    <div class="panel-head"><div class="panel-title">Feedback preferences</div></div>
+    <p class="panel-sub">How each person prefers to receive feedback — so it lands the way they can actually use it.</p>
+    <div style="overflow-x:auto"><table id="prefTable"></table></div>
+  </div>
+
+  <!-- MEETING COMFORT -->
+  <div class="panel">
+    <div class="panel-head"><div class="panel-title">Meeting participation</div></div>
+    <p class="panel-sub">Comfort speaking up live, left to right. This isn't a score to fix — it tells you who may want a pre-read, a heads-up, or written channels to contribute fully.</p>
+    <div class="comfort" id="comfort"></div>
+  </div>
+
+  <!-- STRENGTHS -->
+  <div class="panel">
+    <div class="panel-head"><div class="panel-title">Where our strengths cluster</div></div>
+    <p class="panel-sub">Strengths named across the team. Bigger counts show where you're deep — and the gaps hint at where to hire or develop.</p>
+    <div class="cloud" id="cloud"></div>
+  </div>
+
+  <!-- EDITOR -->
+  <div class="panel">
+    <div class="panel-head"><div class="panel-title">Team data</div></div>
+    <p class="panel-sub">Edit, add, or remove people. Hours are in each person's local time (0–23). Everything above updates live. Use the details for feedback style, meeting comfort, and strengths.</p>
+    <div class="ed-head"><span>Name</span><span>Timezone (UTC offset)</span><span>Start</span><span>End</span><span></span></div>
+    <div class="members" id="members"></div>
+    <button class="add-member" id="addMember">+ add a teammate</button>
+  </div>
+</main>
+
+<footer>MANAGER DASHBOARD · EDITABLE TEMPLATE</footer>
+
+<script>
+/* ===== seed data (edit in the page) =====
+   tzOffset: hours from UTC. work=[startLocal,endLocal] in local 24h.
+   focus=[s,e] optional local focus block. feedback/meetings/strengths from intake. */
+let team=[
+  {name:"Maya Okonkwo", tzOffset:1,  work:[9,17],  focus:[9,11],  fbStyle:"Direct, in the moment", fbChannel:"Spoken", meetComfort:85, strengths:["Strategy","Facilitation","Writing"]},
+  {name:"Diego Santos",  tzOffset:-3, work:[8,16],  focus:[14,16], fbStyle:"Gentle, with context", fbChannel:"Written", meetComfort:35, strengths:["Engineering","Systems thinking","Mentoring"]},
+  {name:"Priya Nair",    tzOffset:5.5,work:[10,18], focus:[10,12], fbStyle:"Scheduled, private", fbChannel:"Written", meetComfort:55, strengths:["Design","Research","Facilitation"]},
+  {name:"Sam Lindqvist", tzOffset:1,  work:[8,16],  focus:[13,15], fbStyle:"Direct, private", fbChannel:"Spoken", meetComfort:70, strengths:["Engineering","Data","Writing"]},
+  {name:"Tariq Hassan",  tzOffset:-8, work:[9,17],  focus:[9,12],  fbStyle:"Gentle, in the moment", fbChannel:"Either", meetComfort:45, strengths:["Product","Strategy","Research"]},
+];
+
+const $=id=>document.getElementById(id);
+function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function toUTC(localHour,off){let h=localHour-off;h=((h%24)+24)%24;return h;}
+function offLabel(o){const s=o>=0?'+':'';return 'UTC'+s+o;}
+
+function renderAll(){renderStats();renderTZ();renderPrefs();renderComfort();renderCloud();}
+
+/* ---- stats ---- */
+function renderStats(){
+  const offsets=[...new Set(team.map(m=>m.tzOffset))];
+  const spread=offsets.length?Math.max(...offsets)-Math.min(...offsets):0;
+  const avgComfort=team.length?Math.round(team.reduce((a,m)=>a+(+m.meetComfort||0),0)/team.length):0;
+  $('stats').innerHTML=`
+    ${stat(team.length,'Teammates')}
+    ${stat(offsets.length,'Timezones')}
+    ${stat(spread+'h','TZ spread')}
+    ${stat(bestOverlap().count,'Max online together')}
+  `;
+}
+function stat(big,lbl){return `<div class="stat"><div class="big">${big}</div><div class="lbl">${lbl}</div></div>`;}
+
+/* ---- timezone overlap ---- */
+function utcCoverage(m){ // returns 24-array: 0 none,1 work,2 focus (in UTC)
+  const arr=new Array(24).fill(0);
+  for(let lh=m.work[0];lh<m.work[1];lh++){arr[toUTC(lh,m.tzOffset)]=1;}
+  if(m.focus){for(let lh=m.focus[0];lh<m.focus[1];lh++){const u=toUTC(lh,m.tzOffset);if(arr[u])arr[u]=2;}}
+  return arr;
+}
+function overlapCounts(){
+  const counts=new Array(24).fill(0);
+  team.forEach(m=>{const c=utcCoverage(m);for(let h=0;h<24;h++)if(c[h])counts[h]++;});
+  return counts;
+}
+function bestOverlap(){
+  const counts=overlapCounts();const max=Math.max(0,...counts);
+  const hours=counts.map((c,h)=>c===max?h:-1).filter(h=>h>=0);
+  return {count:max,hours};
+}
+function renderTZ(){
+  let hdr='<div class="tz-hours"><div class="corner">local→UTC</div>';
+  for(let h=0;h<24;h++)hdr+=`<div class="h">${h}</div>`;
+  hdr+='</div>';
+  let rows='';
+  team.forEach(m=>{
+    const cov=utcCoverage(m);
+    let cells='';
+    for(let h=0;h<24;h++)cells+=`<div class="cell ${cov[h]===2?'focus':cov[h]===1?'work':''}"></div>`;
+    rows+=`<div class="tz-row"><div class="tz-name">${esc(m.name)}<small>${offLabel(m.tzOffset)} · ${m.work[0]}:00–${m.work[1]}:00 local</small></div>${cells}</div>`;
+  });
+  // overlap row
+  const counts=overlapCounts();const max=Math.max(1,...counts);
+  let ov='';
+  for(let h=0;h<24;h++){const on=counts[h]===max&&max>0;ov+=`<div class="cell ${on?'ov':''}" title="${counts[h]} online"></div>`;}
+  rows+=`<div class="tz-row overlap-row"><div class="tz-name">Most overlap</div>${ov}</div>`;
+  $('tzGrid').innerHTML=hdr+rows;
+
+  const bw=bestOverlap();
+  if(bw.count<=1){$('bestWindow').innerHTML='With this spread, there\u2019s little or no shared live time — <strong>lean async</strong>, and rotate any unavoidable sync meetings.';}
+  else{
+    const ranges=groupHours(bw.hours).map(r=>r[0]===r[1]?`${r[0]}:00`:`${r[0]}:00–${r[1]+1}:00`).join(', ');
+    $('bestWindow').innerHTML=`Best live window: <strong>${ranges} UTC</strong> — about <strong>${bw.count} of ${team.length}</strong> people online. Outside it, default to async.`;
+  }
+}
+function groupHours(hrs){const s=[...hrs].sort((a,b)=>a-b);const out=[];let st=s[0],pv=s[0];for(let i=1;i<s.length;i++){if(s[i]===pv+1){pv=s[i];}else{out.push([st,pv]);st=pv=s[i];}}if(st!==undefined)out.push([st,pv]);return out;}
+
+/* ---- feedback prefs ---- */
+function renderPrefs(){
+  let rows='<tr><th>Person</th><th>Style</th><th>Channel</th></tr>';
+  team.forEach(m=>{rows+=`<tr><td class="person">${esc(m.name)}</td><td>${esc(m.fbStyle||'—')}</td><td><span class="pill">${esc(m.fbChannel||'—')}</span></td></tr>`;});
+  $('prefTable').innerHTML=rows;
+}
+
+/* ---- meeting comfort ---- */
+function renderComfort(){
+  const sorted=[...team].sort((a,b)=>a.meetComfort-b.meetComfort);
+  $('comfort').innerHTML=sorted.map(m=>{
+    const v=Math.max(0,Math.min(100,+m.meetComfort||0));
+    const tag=v<40?'May prefer pre-reads / written':v<70?'Warms up in smaller groups':'Comfortable speaking live';
+    return `<div class="comfort-row"><div class="nm">${esc(m.name)}</div><div class="track"><div class="track-fill" style="width:${v}%"></div></div><div class="tag">${tag}</div></div>`;
+  }).join('');
+}
+
+/* ---- strengths cloud ---- */
+function renderCloud(){
+  const counts={};
+  team.forEach(m=>(m.strengths||[]).forEach(s=>{const k=s.trim();if(k)counts[k]=(counts[k]||0)+1;}));
+  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  $('cloud').innerHTML=sorted.map(([s,n])=>{
+    const size=13+Math.min(n,5)*2;
+    return `<span class="scluster" style="font-size:${size}px">${esc(s)}<b>${n>1?'×'+n:''}</b></span>`;
+  }).join('') || '<span style="color:#8a8275">No strengths entered yet.</span>';
+}
+
+/* ===== editor ===== */
+function renderEditor(){
+  $('members').innerHTML=team.map((m,i)=>`
+    <div class="member-row">
+      <input data-i="${i}" data-f="name" value="${esc(m.name)}" placeholder="Name">
+      <input data-i="${i}" data-f="tzOffset" type="number" step="0.5" value="${m.tzOffset}" placeholder="UTC offset">
+      <input data-i="${i}" data-f="workStart" type="number" min="0" max="23" value="${m.work[0]}">
+      <input data-i="${i}" data-f="workEnd" type="number" min="1" max="24" value="${m.work[1]}">
+      <span class="mini" data-del="${i}">remove ✕</span>
+    </div>
+    <details>
+      <summary>${esc(m.name)} — feedback, meetings & strengths</summary>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 14px;">
+        <label style="font-size:12px;color:#5a635c">Feedback style
+          <input data-i="${i}" data-f="fbStyle" value="${esc(m.fbStyle||'')}" style="margin-top:4px;width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;background:var(--paper)"></label>
+        <label style="font-size:12px;color:#5a635c">Feedback channel
+          <select data-i="${i}" data-f="fbChannel" style="margin-top:4px;width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;background:var(--paper)">
+            ${['Written','Spoken','Either'].map(o=>`<option ${m.fbChannel===o?'selected':''}>${o}</option>`).join('')}
+          </select></label>
+        <label style="font-size:12px;color:#5a635c">Meeting comfort (0–100)
+          <input data-i="${i}" data-f="meetComfort" type="number" min="0" max="100" value="${m.meetComfort}" style="margin-top:4px;width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;background:var(--paper)"></label>
+        <label style="font-size:12px;color:#5a635c">Strengths (comma-separated)
+          <input data-i="${i}" data-f="strengths" value="${esc((m.strengths||[]).join(', '))}" style="margin-top:4px;width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;background:var(--paper)"></label>
+        <label style="font-size:12px;color:#5a635c">Focus block start (local, optional)
+          <input data-i="${i}" data-f="focusStart" type="number" min="0" max="23" value="${m.focus?m.focus[0]:''}" style="margin-top:4px;width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;background:var(--paper)"></label>
+        <label style="font-size:12px;color:#5a635c">Focus block end (local, optional)
+          <input data-i="${i}" data-f="focusEnd" type="number" min="1" max="24" value="${m.focus?m.focus[1]:''}" style="margin-top:4px;width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;background:var(--paper)"></label>
+      </div>
+    </details>
+  `).join('');
+}
+
+$('members').addEventListener('input',e=>{
+  const i=+e.target.dataset.i, f=e.target.dataset.f; if(i===undefined||!f)return;
+  const m=team[i]; const v=e.target.value;
+  if(f==='name')m.name=v;
+  else if(f==='tzOffset')m.tzOffset=parseFloat(v)||0;
+  else if(f==='workStart')m.work[0]=clampInt(v,0,23);
+  else if(f==='workEnd')m.work[1]=clampInt(v,1,24);
+  else if(f==='fbStyle')m.fbStyle=v;
+  else if(f==='fbChannel')m.fbChannel=v;
+  else if(f==='meetComfort')m.meetComfort=clampInt(v,0,100);
+  else if(f==='strengths')m.strengths=v.split(',').map(s=>s.trim()).filter(Boolean);
+  else if(f==='focusStart'||f==='focusEnd'){
+    const fs=team[i]; const sEl=document.querySelector(`[data-i="${i}"][data-f="focusStart"]`); const eEl=document.querySelector(`[data-i="${i}"][data-f="focusEnd"]`);
+    const s=parseInt(sEl.value), en=parseInt(eEl.value);
+    fs.focus=(!isNaN(s)&&!isNaN(en)&&en>s)?[s,en]:null;
+  }
+  renderAll();
+});
+$('members').addEventListener('click',e=>{
+  if(e.target.dataset.del!==undefined){team.splice(+e.target.dataset.del,1);renderEditor();renderAll();}
+});
+$('addMember').onclick=()=>{
+  team.push({name:"New teammate",tzOffset:0,work:[9,17],focus:null,fbStyle:"",fbChannel:"Either",meetComfort:50,strengths:[]});
+  renderEditor();renderAll();
+};
+function clampInt(v,lo,hi){let n=parseInt(v);if(isNaN(n))n=lo;return Math.max(lo,Math.min(hi,n));}
+
+renderEditor();renderAll();
+</script>
+</body>
+</html>

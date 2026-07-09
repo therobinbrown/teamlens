@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collaboration Assistant — TeamLens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=Spline+Sans+Mono:wght@400;500;600&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c2230; --paper:#ffffff; --paper-2:#e9ecf1;
+    --copper:#3d6a9e; --copper-soft:#6b8cb5; --teal:#1a2b45;
+    --teal-bright:#3d6a9e; --line:#d3d8e0; --shadow:rgba(20,32,28,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Albert Sans',sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;background-image:none;}
+
+  .sitenav{position:sticky;top:0;z-index:100;background:#1a2b45;border-bottom:1px solid #16233b;}
+  .sitenav-inner{max-width:1000px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+  .sitenav .brand{font-family:'Fraunces',serif;font-weight:900;font-size:18px;letter-spacing:-0.01em;margin-right:auto;color:#fff;}
+  .sitenav .brand span{color:#7ea4d6;}
+  .sitenav a{font-family:'Spline Sans Mono',monospace;font-size:12.5px;letter-spacing:0.04em;text-decoration:none;color:#9db4d4;padding:6px 2px;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;}
+  .sitenav a:hover{color:#fff;}
+  .sitenav a.current{color:#fff;border-color:#7ea4d6;}
+
+  .hero{max-width:1000px;margin:0 auto;padding:52px 24px 8px;}
+  .eyebrow{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.3em;text-transform:uppercase;color:var(--copper);margin-bottom:14px;}
+  h1{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(38px,7vw,68px);line-height:0.97;letter-spacing:-0.025em;}
+  h1 em{font-style:italic;color:var(--teal-bright);}
+  .lede{margin-top:18px;font-size:18px;max-width:60ch;color:#414b59;}
+
+  main{max-width:1000px;margin:0 auto;padding:30px 24px 80px;}
+
+  /* controls */
+  .controls{background:#f7f9fb;border:1px solid var(--line);border-radius:18px;padding:24px;margin-bottom:22px;}
+  .ctrl-label{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--copper);margin-bottom:10px;}
+  .people{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px;}
+  .person-chip{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:99px;padding:8px 16px 8px 8px;background:#fff;cursor:pointer;transition:all 0.18s;}
+  .person-chip:hover{border-color:var(--copper);}
+  .person-chip.sel{border-color:var(--teal);background:var(--teal);color:#fff;}
+  .avatar{width:30px;height:30px;border-radius:50%;background:var(--copper-soft);color:#fff;display:grid;place-items:center;font-family:'Fraunces',serif;font-weight:600;font-size:14px;}
+  .person-chip.sel .avatar{background:#fff;color:var(--teal);}
+  .person-chip .who{font-size:14px;font-weight:600;line-height:1.1;}
+  .person-chip .who small{display:block;font-family:'Spline Sans Mono',monospace;font-size:9.5px;font-weight:400;letter-spacing:0.04em;opacity:0.8;}
+
+  .qrow{display:flex;gap:10px;align-items:flex-end;}
+  textarea{flex:1;resize:none;font-family:'Albert Sans',sans-serif;font-size:15px;padding:13px 15px;border:1.5px solid var(--line);border-radius:13px;background:#fff;color:var(--ink);min-height:50px;max-height:130px;}
+  textarea:focus{outline:none;border-color:var(--copper);}
+  .ask{background:var(--teal);color:#fff;border:none;border-radius:13px;padding:0 22px;height:50px;font-family:'Spline Sans Mono',monospace;font-size:13px;letter-spacing:0.05em;cursor:pointer;transition:background 0.2s;white-space:nowrap;}
+  .ask:hover{background:var(--teal-bright);}
+  .ask:disabled{opacity:0.4;cursor:not-allowed;}
+
+  .suggested{margin-top:14px;}
+  .sug-label{font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:#8a92a0;margin-bottom:8px;}
+  .sug-chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .sug{font-size:13px;padding:7px 13px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:#41546e;cursor:pointer;transition:all 0.16s;text-align:left;}
+  .sug:hover{border-color:var(--copper);color:var(--copper);}
+
+  /* answer */
+  .answer{background:#f7f9fb;border:1px solid var(--line);border-left:5px solid var(--teal);border-radius:14px;padding:24px 26px;margin-bottom:16px;animation:rise 0.4s ease;}
+  @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  .answer .q{font-family:'Fraunces',serif;font-weight:600;font-size:17px;margin-bottom:12px;color:var(--teal);}
+  .answer .rec{font-size:15.5px;color:#2a3340;}
+  .answer .rec strong{color:var(--ink);}
+  .answer .basis{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-size:12.5px;color:#8a92a0;font-family:'Spline Sans Mono',monospace;letter-spacing:0.02em;}
+  .empty{color:#8a92a0;font-size:15px;padding:20px;text-align:center;}
+
+  /* privacy legend + profile inspector */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:34px;}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr;}}
+  .panel{background:#f7f9fb;border:1px solid var(--line);border-radius:16px;padding:24px;}
+  .panel h3{font-family:'Fraunces',serif;font-weight:600;font-size:20px;margin-bottom:6px;}
+  .panel .sub{font-size:13.5px;color:#5a6472;margin-bottom:16px;}
+  .tier{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;}
+  .badge{flex-shrink:0;font-family:'Spline Sans Mono',monospace;font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;padding:4px 9px;border-radius:6px;font-weight:600;margin-top:1px;}
+  .b-team{background:#dce8f5;color:#1a4a7a;}
+  .b-mgr{background:#e2e0f0;color:#453a8c;}
+  .b-ai{background:#e0eede;color:#356034;}
+  .b-priv{background:#eee1e1;color:#8a3535;}
+  .tier .desc{font-size:13.5px;color:#41546e;}
+
+  .inspect-field{padding:11px 0;border-bottom:1px solid var(--line);}
+  .inspect-field:last-child{border-bottom:none;}
+  .inspect-field .fl{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .inspect-field .fname{font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--copper);}
+  .inspect-field .fval{font-size:14px;color:#2a3340;margin-top:5px;}
+  .inspect-field.hidden-val .fval{color:#a0a8b4;font-style:italic;}
+
+  footer{text-align:center;padding:30px;font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.1em;color:#9aa2b0;}
+</style>
+</head>
+<body>
+<nav class="sitenav">
+  <div class="sitenav-inner">
+    <div class="brand">Team<span>Lens</span></div>
+    <a href="onboarding-hub.html">Start here</a>
+    <a href="teammate-intake.html">Introduce yourself</a>
+    <a href="team-roster.html">The team</a>
+    <a href="team-agreements.html">How we work</a>
+    <a href="playbook.html">Playbook</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="assistant.html" class="current">Assistant</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="eyebrow">Collaboration assistant</div>
+  <h1>How do I <em>work with…</em></h1>
+  <p class="lede">Pick a teammate and ask a practical question. Instead of reading a whole profile, you get a specific recommendation based on how that person has said they work best — turning preferences into intentional collaboration.</p>
+</div>
+
+<main>
+  <div class="controls">
+    <div class="ctrl-label">1 · Who do you want to work with?</div>
+    <div class="people" id="people"></div>
+    <div class="ctrl-label">2 · What do you want to know?</div>
+    <div class="qrow">
+      <textarea id="q" placeholder="e.g. What's the best way to send them an urgent request?" rows="1"></textarea>
+      <button class="ask" id="askBtn">Ask</button>
+    </div>
+    <div class="suggested">
+      <div class="sug-label">Try one of these</div>
+      <div class="sug-chips" id="sugChips"></div>
+    </div>
+  </div>
+
+  <div id="answers"></div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3>How privacy works</h3>
+      <div class="sub">Every piece of a profile carries a visibility level. The assistant respects them — it can even let private information shape a recommendation without revealing the reason behind it.</div>
+      <div class="tier"><span class="badge b-team">Team</span><span class="desc">Visible to everyone, and freely used in recommendations.</span></div>
+      <div class="tier"><span class="badge b-mgr">Manager</span><span class="desc">Shown to the person's manager; used in advice but not shown to peers.</span></div>
+      <div class="tier"><span class="badge b-ai">AI-only</span><span class="desc">The assistant may use it to shape guidance <em>without disclosing the detail itself</em>.</span></div>
+      <div class="tier"><span class="badge b-priv">Private</span><span class="desc">Never shown and never used in recommendations.</span></div>
+    </div>
+    <div class="panel">
+      <h3>What the assistant can see</h3>
+      <div class="sub" id="inspectSub">Select a teammate to see how their profile is shared. Fields marked AI-only or Private are handled discreetly.</div>
+      <div id="inspect"></div>
+    </div>
+  </div>
+</main>
+
+<footer>TEAMLENS · COLLABORATION ASSISTANT · DEMO (NO AI KEY REQUIRED)</footer>
+
+<script>
+/* ===== Example team profiles with per-field visibility tiers =====
+   tier: 'team' | 'manager' | 'ai' | 'private'
+   'ai' fields shape advice but are never quoted; 'private' is fully ignored. */
+const TEAM = [
+  {
+    name:"Maya Okonkwo", role:"Team Lead", tz:"CET (UTC+1)",
+    f:{
+      hours:{v:"9–5 CET, sharpest 9–11am (focus block). Afternoons best for meetings.", tier:"team"},
+      communication:{v:"Async first; quick things in chat, big things in a doc or call. Replies same day.", tier:"team"},
+      urgency:{v:"Urgent: tag her in chat with 'urgent'. Non-urgent: a normal message is fine.", tier:"team"},
+      feedback:{v:"Direct and in the moment; no cushioning needed.", tier:"team"},
+      meetings:{v:"Very comfortable live; happy to facilitate.", tier:"team"},
+      assignments:{v:"Give her the goal and context, then let her run with the how.", tier:"team"},
+      strengths:{v:"Strategy, facilitation, writing.", tier:"team"},
+      support:{v:"Feels supported when looped in early on decisions.", tier:"team"},
+      note:{v:"Prefers no meetings before 9am; eases into the day with focus work.", tier:"ai"}
+    }
+  },
+  {
+    name:"Diego Santos", role:"Senior Engineer", tz:"BRT (UTC−3)",
+    f:{
+      hours:{v:"8–4 BRT; focus block 2–4pm. Most reachable in the morning.", tier:"team"},
+      communication:{v:"Async; checks messages in batches, not instantly. Prefers written threads for technical topics.", tier:"team"},
+      urgency:{v:"Urgent: call or text directly — batched messages may wait hours otherwise. Non-urgent: written thread.", tier:"team"},
+      feedback:{v:"Gentle, with context; walk him through the reasoning.", tier:"team"},
+      meetings:{v:"Prefers a pre-read; thinks first, shares after. Quieter in big live meetings.", tier:"team"},
+      assignments:{v:"Written instructions with clear ownership; avoid last-minute verbal changes.", tier:"team"},
+      strengths:{v:"Engineering, systems thinking, mentoring.", tier:"team"},
+      support:{v:"Feels supported when it's safe to ask questions and he gets a heads-up before big changes.", tier:"team"},
+      note:{v:"English is his second language; appreciates a moment to formulate in fast live discussion, and written channels help him contribute his best.", tier:"ai"}
+    }
+  },
+  {
+    name:"Priya Nair", role:"Product Designer", tz:"IST (UTC+5:30)",
+    f:{
+      hours:{v:"10–6 IST; focus 10–12. Most reachable in her afternoon (the team's morning).", tier:"team"},
+      communication:{v:"Mix — quick things in chat, design decisions written up. Same-day reply.", tier:"team"},
+      urgency:{v:"Urgent: chat message with clear 'urgent' flag. Non-urgent: email or normal message.", tier:"team"},
+      feedback:{v:"Scheduled and private, not a surprise in a group.", tier:"manager"},
+      meetings:{v:"Warms up in smaller groups; contributes better with a pre-read.", tier:"team"},
+      assignments:{v:"Clear priorities and space to go deep on one thing at a time.", tier:"team"},
+      strengths:{v:"Design, research, facilitation.", tier:"team"},
+      support:{v:"Feels supported when brought into decisions early, while things are still open.", tier:"team"},
+      note:{v:"Far side of the timezone spread; relies on written handoffs. Observes some regional holidays the team calendar may not show.", tier:"ai"}
+    }
+  },
+  {
+    name:"Sam Lindqvist", role:"Data & Analytics", tz:"CET (UTC+1)",
+    f:{
+      hours:{v:"8–4 CET; focus block 1–3pm. Otherwise quick to respond.", tier:"team"},
+      communication:{v:"Async first; likes things written down. Quick chat questions fine; replies within a couple of hours.", tier:"team"},
+      urgency:{v:"Urgent: tag in chat. Non-urgent: email or message anytime.", tier:"team"},
+      feedback:{v:"Direct and in private; would rather know exactly what's not working.", tier:"manager"},
+      meetings:{v:"Comfortable live, especially in working sessions; happy to present data.", tier:"team"},
+      assignments:{v:"Clear definitions of success and some quiet focus time for deep analysis.", tier:"team"},
+      strengths:{v:"Engineering, data, writing.", tier:"team"},
+      support:{v:"Feels supported by recognition when the analysis moved a decision.", tier:"team"},
+      note:{v:"", tier:"team"}
+    }
+  },
+  {
+    name:"Tariq Hassan", role:"Product Manager", tz:"PST (UTC−8)",
+    f:{
+      hours:{v:"9–5 PST; focus 9–12. Most reachable in his afternoon (end of day for Europe).", tier:"team"},
+      communication:{v:"Fits the moment — chat for quick, call for nuance. Writes detailed end-of-day handoffs.", tier:"team"},
+      urgency:{v:"Urgent: text, since live overlap is short. Non-urgent: handoff note or message.", tier:"team"},
+      feedback:{v:"Gentle and in the moment; a light touch as things come up.", tier:"team"},
+      meetings:{v:"Comfortable in small groups; appreciates an agenda ahead. Camera-optional on long calls.", tier:"team"},
+      assignments:{v:"Clear ownership and room to go deep; protect his morning focus block.", tier:"team"},
+      strengths:{v:"Product, strategy, research.", tier:"team"},
+      support:{v:"Feels supported by regular check-ins and being trusted to work independently between them.", tier:"team"},
+      note:{v:"Early evenings are reserved for his kids; catches up after their bedtime.", tier:"ai"}
+    }
+  },
+];
+
+const SUGGESTED = [
+  "What's the best time and channel to reach them about a deliverable?",
+  "How do they prefer to receive feedback?",
+  "How should I prepare them for a client meeting?",
+  "How should I involve them in a brainstorm?",
+  "What's the best way to send them an urgent request?",
+];
+
+let selected=null;
+const peopleEl=document.getElementById('people');
+const sugEl=document.getElementById('sugChips');
+const answersEl=document.getElementById('answers');
+const qEl=document.getElementById('q');
+
+function initials(n){return n.split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();}
+
+TEAM.forEach((p,i)=>{
+  const c=document.createElement('button');c.className='person-chip';c.dataset.i=i;
+  c.innerHTML=`<span class="avatar">${initials(p.name)}</span><span class="who">${p.name}<small>${p.role}</small></span>`;
+  c.onclick=()=>{selected=i;document.querySelectorAll('.person-chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');renderInspect();};
+  peopleEl.appendChild(c);
+});
+SUGGESTED.forEach(s=>{
+  const b=document.createElement('button');b.className='sug';b.textContent=s;
+  b.onclick=()=>{qEl.value=s;qEl.focus();};
+  sugEl.appendChild(b);
+});
+
+qEl.addEventListener('input',()=>{qEl.style.height='auto';qEl.style.height=Math.min(qEl.scrollHeight,130)+'px';});
+qEl.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask();}});
+document.getElementById('askBtn').onclick=ask;
+
+/* ===== the assistant: keyword-matched, tier-respecting recommendations ===== */
+function ask(){
+  if(selected===null){flashNeedPerson();return;}
+  const q=qEl.value.trim();
+  if(!q)return;
+  const p=TEAM[selected];
+  const {rec,basis}=recommend(p,q);
+  const card=document.createElement('div');card.className='answer';
+  card.innerHTML=`<div class="q">Working with ${esc(p.name)} · "${esc(q)}"</div><div class="rec">${rec}</div><div class="basis">${basis}</div>`;
+  answersEl.prepend(card);
+  qEl.value='';qEl.style.height='auto';
+}
+function flashNeedPerson(){
+  const card=document.createElement('div');card.className='answer';
+  card.innerHTML=`<div class="rec"><strong>Pick a teammate first</strong> — choose someone above, then ask your question.</div>`;
+  answersEl.prepend(card);
+}
+
+function has(q,words){const t=q.toLowerCase();return words.some(w=>t.includes(w));}
+// pull a field's value only if its tier permits disclosure
+function val(p,key){const f=p.f[key];return f&&f.v?f.v:'';}
+function tierOf(p,key){const f=p.f[key];return f?f.tier:null;}
+function aiHint(p){ // returns the ai-only note text (to shape advice, never quoted)
+  const n=p.f.note; return (n&&n.tier==='ai'&&n.v)?n.v:'';
+}
+
+function recommend(p,q){
+  const first=p.name.split(' ')[0];
+  let rec='', used=[];
+
+  const showable=(key)=>{ // team + manager tiers can be quoted; ai/private cannot
+    const t=tierOf(p,key); return t==='team'||t==='manager';
+  };
+  const quote=(key,label)=>{ if(showable(key)&&val(p,key)){used.push(label||key);return val(p,key);} return ''; };
+
+  // URGENT
+  if(has(q,['urgent','asap','emergency','right away','immediately'])){
+    const u=quote('urgency','urgent vs. non-urgent');
+    rec=`For something urgent, ${u?lower(u):'reach '+first+' on their fastest channel and flag it clearly as urgent'}.`;
+    rec=`For an urgent request to ${first}: ${u?u:'use their fastest direct channel and mark it clearly urgent.'}`;
+  }
+  // FEEDBACK
+  else if(has(q,['feedback','critique','review','criticism'])){
+    const fb=quote('feedback','feedback preference');
+    if(fb){ rec=`When giving ${first} feedback: <strong>${fb}</strong> ${tierOf(p,'feedback')==='manager'?'(this preference is manager-visible, so keep the setting appropriately private.)':''}`; }
+    else { rec=`${first} hasn't shared a feedback preference at a level I can show — when in doubt, ask how they'd like to receive it.`; }
+  }
+  // MEETING PREP / CLIENT MEETING / PRESENT
+  else if(has(q,['prepare','prep','client meeting','present','presentation'])){
+    const mt=quote('meetings','meeting preference');
+    const asg=quote('assignments','how they like info');
+    rec=`To prepare ${first} for a meeting: ${mt?mt+'. ':''}${asg?'Share materials in advance — '+lower(asg)+'. ':'Send an agenda and any pre-read ahead of time. '}Give plenty of notice before asking them to speak or present.`;
+  }
+  // BRAINSTORM / INVOLVE
+  else if(has(q,['brainstorm','ideate','involve','include','participate'])){
+    const mt=quote('meetings','meeting preference');
+    rec=`To involve ${first} in a brainstorm: ${mt?mt+'. ':''}Send the prompt ahead so they can think first, and make room for written input as well as live discussion.`;
+  }
+  // CONTACT / TIME / CHANNEL / DELIVERABLE
+  else if(has(q,['contact','reach','time','when','channel','deliverable','message','email','ping'])){
+    const hrs=quote('hours','working hours');
+    const comm=quote('communication','communication style');
+    rec=`To reach ${first} about a deliverable: ${hrs?'aim for their working window — '+lower(hrs)+'. ':''}${comm?lower(comm):'Match the channel to the urgency.'}`;
+  }
+  // GENERAL / FALLBACK
+  else {
+    const comm=quote('communication','communication style');
+    const hrs=quote('hours','working hours');
+    rec=`Here's the short version for working with ${first}: ${comm?comm+' ':''}${hrs?'Their hours: '+lower(hrs):''}`.trim();
+    if(!comm&&!hrs)rec=`I don't have a specific match for that, but ${first}'s profile covers hours, communication, feedback, and meeting preferences — try one of the suggested questions.`;
+  }
+
+  // ---- apply AI-only context WITHOUT revealing it ----
+  const hint=aiHint(p);
+  let discreet='';
+  if(hint){
+    // shape timing advice if the note implies availability limits, without quoting it
+    if(/before \d|no meetings|morning|focus/i.test(hint) && has(q,['time','when','contact','reach','meeting','prepare','urgent','deliverable'])){
+      discreet=`A note on timing: it's best to avoid very early in ${first}'s day — aim a little later.`;
+    } else if(/kids|bedtime|evening|caregiv|family/i.test(hint) && has(q,['time','when','contact','reach','urgent','deliverable'])){
+      discreet=`On timing: ${first} has commitments at the edges of the day, so aim for the middle of their working hours.`;
+    } else if(/second language|formulate|written/i.test(hint) && has(q,['meeting','prepare','present','brainstorm','feedback','client'])){
+      discreet=`One more thing: giving ${first} materials in writing ahead of time will help them contribute their best.`;
+    } else if(/handoff|timezone|holiday/i.test(hint) && has(q,['time','when','contact','reach','deliverable'])){
+      discreet=`Given the timezone gap, lean on written handoffs rather than expecting a live reply.`;
+    }
+  }
+  if(discreet)rec+= ` ${discreet}`;
+
+  const basis = used.length
+    ? `Based on: ${used.join(', ')}${hint&&discreet?' · plus a private note applied discreetly':''}.`
+    : (hint&&discreet?`Based on a private note, applied without disclosing it.`:`No specific profile fields matched — try a suggested question.`);
+  return {rec,basis};
+}
+function lower(s){return s.charAt(0).toLowerCase()+s.slice(1);}
+
+/* ===== profile inspector: shows how each field is shared ===== */
+function renderInspect(){
+  const p=TEAM[selected];
+  document.getElementById('inspectSub').textContent=`How ${p.name.split(' ')[0]}'s profile is shared. AI-only and Private fields are handled discreetly.`;
+  const labels={hours:'Hours',communication:'Communication',urgency:'Urgent vs non-urgent',feedback:'Feedback',meetings:'Meetings',assignments:'Assignments',strengths:'Strengths',support:'Feeling supported',note:'Personal note'};
+  const badge={team:'b-team',manager:'b-mgr',ai:'b-ai',private:'b-priv'};
+  const badgeText={team:'Team',manager:'Manager',ai:'AI-only',private:'Private'};
+  let html='';
+  Object.keys(labels).forEach(k=>{
+    const f=p.f[k]; if(!f||!f.v)return;
+    const t=f.tier;
+    const shown=(t==='team'||t==='manager');
+    html+=`<div class="inspect-field ${shown?'':'hidden-val'}">
+      <div class="fl"><span class="fname">${labels[k]}</span><span class="badge ${badge[t]}">${badgeText[t]}</span></div>
+      <div class="fval">${shown?esc(f.v):(t==='ai'?'(used to shape advice, not shown)':'(hidden)')}</div>
+    </div>`;
+  });
+  document.getElementById('inspect').innerHTML=html;
+}
+
+function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+</script>
+</body>
+</html>

@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet the Team — Intake</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=Spline+Sans+Mono:wght@400;500;600&family=Albert+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c2230; --paper:#ffffff; --paper-2:#e9ecf1;
+    --copper:#3d6a9e; --copper-soft:#6b8cb5; --teal:#1a2b45;
+    --teal-bright:#3d6a9e; --line:#d3d8e0; --shadow:rgba(20,32,28,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  .sitenav{position:sticky;top:0;z-index:100;background:#1a2b45;border-bottom:1px solid #16233b;}
+  .sitenav-inner{max-width:1000px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+  .sitenav .brand{font-family:'Fraunces',serif;font-weight:900;font-size:18px;letter-spacing:-0.01em;margin-right:auto;color:#ffffff;}
+  .sitenav .brand span{color:#7ea4d6;}
+  .sitenav a{font-family:'Spline Sans Mono',monospace;font-size:12.5px;letter-spacing:0.04em;text-decoration:none;color:#9db4d4;padding:6px 2px;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;}
+  .sitenav a:hover{color:#ffffff;}
+  .sitenav a.current{color:#ffffff;border-color:#7ea4d6;}
+  body{
+    font-family:'Albert Sans',sans-serif; background:var(--paper); color:var(--ink);
+    line-height:1.55; min-height:100vh;
+    background-image:none;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:40px 24px 80px;}
+  .eyebrow{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.28em;text-transform:uppercase;color:var(--copper);margin-bottom:12px;}
+  h1{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(34px,6vw,56px);line-height:1;letter-spacing:-0.02em;margin-bottom:16px;}
+  h1 em{font-style:italic;color:var(--teal);}
+  .intro{font-size:17px;color:#3c463f;max-width:54ch;margin-bottom:14px;}
+  .consent{
+    background:#f7f9fb;border:1px solid var(--line);border-left:5px solid var(--copper);
+    border-radius:12px;padding:16px 18px;font-size:14px;color:#454e47;margin-bottom:28px;
+  }
+  .consent strong{color:var(--ink);}
+  /* start-of-conversation cue bridging intro to the chat */
+  .start-cue{display:flex;flex-direction:column;align-items:center;gap:6px;margin:6px 0 20px;text-align:center;}
+  .start-cue .lbl{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:var(--copper);}
+  .start-cue .sub{font-size:14px;color:#5a6472;max-width:46ch;}
+  .start-cue .arrow{font-size:22px;color:var(--teal-bright);animation:cuebounce 1.6s ease-in-out infinite;line-height:1;}
+  @keyframes cuebounce{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+  .start-cue.gone{display:none;}
+
+  /* chat */
+  .chat{display:flex;flex-direction:column;gap:14px;margin-bottom:20px;}
+  .msg{padding:14px 18px;border-radius:16px;max-width:85%;font-size:15.5px;animation:rise 0.35s ease;}
+  @keyframes rise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  .msg.ai{background:#f7f9fb;border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px;}
+  .msg.user{background:var(--teal);color:var(--paper);align-self:flex-end;border-bottom-right-radius:4px;}
+  .typing{display:flex;gap:5px;padding:16px 18px;}
+  .typing span{width:8px;height:8px;border-radius:50%;background:var(--copper-soft);animation:bounce 1.2s infinite;}
+  .typing span:nth-child(2){animation-delay:0.2s;}
+  .typing span:nth-child(3){animation-delay:0.4s;}
+  @keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:0.4;}30%{transform:translateY(-7px);opacity:1;}}
+
+  .input-row{display:flex;gap:10px;align-items:flex-end;position:sticky;bottom:0;background:linear-gradient(transparent,var(--paper) 30%);padding-top:14px;}
+  textarea{
+    flex:1;resize:none;font-family:'Albert Sans',sans-serif;font-size:15.5px;
+    padding:14px 16px;border:1.5px solid var(--line);border-radius:14px;background:#f7f9fb;
+    color:var(--ink);min-height:52px;max-height:140px;
+  }
+  textarea:focus{outline:none;border-color:var(--copper);}
+  button.send{
+    background:var(--ink);color:var(--paper);border:none;border-radius:14px;
+    padding:0 22px;height:52px;font-family:'Spline Sans Mono',monospace;font-size:13px;
+    letter-spacing:0.06em;cursor:pointer;transition:background 0.2s;white-space:nowrap;
+  }
+  button.send:hover{background:var(--teal);}
+  button.send:disabled{opacity:0.4;cursor:not-allowed;}
+
+  .progress-dots{display:flex;gap:6px;margin-bottom:24px;}
+
+  /* tap-able answer options */
+  .options{display:flex;flex-wrap:wrap;gap:9px;margin:2px 0 6px;align-self:flex-start;max-width:100%;animation:rise 0.35s ease;}
+  .opt-chip{
+    font-family:'Albert Sans',sans-serif;font-size:14.5px;
+    padding:10px 15px;border:1.5px solid var(--line);border-radius:13px;
+    background:#f7f9fb;color:var(--ink);cursor:pointer;transition:all 0.16s;text-align:left;
+  }
+  .opt-chip:hover{border-color:var(--copper);color:var(--copper);}
+  .opt-chip.sel{background:var(--teal);color:var(--paper);border-color:var(--teal);}
+  .opt-chip.skip{border-style:dashed;color:#8a8275;}
+  .opt-chip.skip:hover{color:var(--ink);border-color:var(--ink);}
+  .multi-hint{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#8a8275;width:100%;margin-bottom:2px;}
+  /* inline privacy control shown on sensitive intake questions */
+  .privacy-inline{width:100%;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .privacy-inline .pl{font-family:'Spline Sans Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#8a92a0;display:inline-flex;align-items:center;gap:5px;}
+  .privacy-inline .pi-chip{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.02em;padding:5px 11px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:#5a6472;cursor:pointer;transition:all 0.15s;}
+  .privacy-inline .pi-chip:hover{border-color:var(--copper);}
+  .privacy-inline .pi-chip.on[data-t="team"]{background:#dce8f5;color:#1a4a7a;border-color:#bcd4ec;}
+  .privacy-inline .pi-chip.on[data-t="manager"]{background:#e2e0f0;color:#453a8c;border-color:#cfcbe6;}
+  .privacy-inline .pi-chip.on[data-t="ai"]{background:#e0eede;color:#356034;border-color:#c9e0c6;}
+  .privacy-inline .pi-chip.on[data-t="private"]{background:#eee1e1;color:#8a3535;border-color:#e2caca;}
+  .confirm-multi{
+    font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.05em;
+    background:var(--ink);color:var(--paper);border:none;border-radius:11px;padding:9px 16px;cursor:pointer;
+  }
+  .confirm-multi:hover{background:var(--teal);}
+
+  .dot{width:28px;height:5px;border-radius:99px;background:var(--line);transition:background 0.4s;}
+  .dot.on{background:var(--copper);}
+
+  /* profile preview */
+  .preview{margin-top:30px;display:none;animation:rise 0.5s ease;}
+  .preview.show{display:block;}
+  .card{
+    background:#f7f9fb;border:1px solid var(--line);border-radius:20px;padding:34px;
+    box-shadow:0 14px 40px var(--shadow);
+  }
+  .card h2{font-family:'Fraunces',serif;font-weight:900;font-size:32px;letter-spacing:-0.01em;}
+  .card .role{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-bright);margin:4px 0 22px;}
+  .field{margin-bottom:18px;}
+  .field h4{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--copper);margin-bottom:5px;}
+  .field p{font-size:15px;color:#2e3833;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{background:var(--paper-2);border:1px solid var(--line);border-radius:99px;padding:5px 13px;font-size:13px;}
+  .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;}
+  .actions button{
+    font-family:'Spline Sans Mono',monospace;font-size:13px;letter-spacing:0.05em;
+    padding:13px 22px;border-radius:12px;cursor:pointer;border:1.5px solid var(--ink);
+  }
+  .btn-primary{background:var(--ink);color:var(--paper);}
+  .btn-primary:hover{background:var(--teal);border-color:var(--teal);}
+  .btn-ghost{background:transparent;color:var(--ink);}
+  .btn-ghost:hover{border-color:var(--copper);color:var(--copper);}
+  .hint{font-size:13px;color:#7a7363;margin-top:14px;font-style:italic;}
+  .err{background:#f8e3df;border:1px solid #c0392b;color:#9b2c20;padding:12px 16px;border-radius:10px;font-size:14px;margin-top:12px;display:none;}
+
+  /* editable profile draft */
+  .edit-notice{background:var(--paper-2);border:1px solid var(--line);border-left:5px solid var(--teal);border-radius:12px;padding:14px 18px;font-size:14px;color:#3c463f;margin-bottom:16px;}
+  [contenteditable]{outline:none;border-radius:8px;transition:background 0.15s,box-shadow 0.15s;cursor:text;}
+  [contenteditable]:hover{background:rgba(107,140,181,0.10);}
+  [contenteditable]:focus{background:#fff;box-shadow:0 0 0 2px var(--copper-soft);padding:2px 6px;margin:-2px -6px;}
+  [contenteditable]:empty::before{content:'Click to add…';color:#b3aa98;font-style:italic;}
+  .chip.edit{display:inline-flex;align-items:center;gap:7px;}
+  .chip .x{cursor:pointer;font-weight:700;color:var(--copper);font-size:15px;line-height:1;opacity:0.6;}
+  .chip .x:hover{opacity:1;}
+  .chip-add{background:transparent;border:1.5px dashed var(--line);border-radius:99px;padding:5px 13px;font-size:13px;color:#8a8275;cursor:pointer;font-family:'Albert Sans',sans-serif;}
+  .chip-add:hover{border-color:var(--copper);color:var(--copper);}
+  .field.removable{position:relative;}
+  .field-x{position:absolute;top:0;right:0;font-family:'Spline Sans Mono',monospace;font-size:11px;color:#b3aa98;cursor:pointer;letter-spacing:0.05em;}
+  .field-x:hover{color:#c0392b;}
+  /* per-field visibility tier selector */
+  .field-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .vis{display:inline-flex;align-items:center;gap:6px;margin-right:52px;}
+  .vis label{font-family:'Spline Sans Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#9aa2b0;}
+  .vis select{font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:0.03em;padding:3px 8px;border:1.5px solid var(--line);border-radius:7px;background:#fff;color:var(--ink);cursor:pointer;}
+  .vis select:focus{outline:none;border-color:var(--copper);}
+  .vis select[data-tier="team"]{background:#dce8f5;color:#1a4a7a;border-color:#bcd4ec;}
+  .vis select[data-tier="manager"]{background:#e2e0f0;color:#453a8c;border-color:#cfcbe6;}
+  .vis select[data-tier="ai"]{background:#e0eede;color:#356034;border-color:#c9e0c6;}
+  .vis select[data-tier="private"]{background:#eee1e1;color:#8a3535;border-color:#e2caca;}
+  .privacy-note{background:var(--paper-2);border:1px solid var(--line);border-left:5px solid var(--teal-bright);border-radius:12px;padding:14px 18px;font-size:13.5px;color:#41546e;margin-bottom:16px;}
+  .privacy-note strong{color:var(--ink);}
+</style>
+</head>
+<body>
+<nav class="sitenav">
+  <div class="sitenav-inner">
+    <div class="brand">Team<span>Lens</span></div>
+    <a href="onboarding-hub.html">Start here</a>
+    <a href="teammate-intake.html" class="current">Introduce yourself</a>
+    <a href="team-roster.html">The team</a>
+    <a href="team-agreements.html">How we work</a>
+    <a href="playbook.html">Playbook</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="assistant.html">Assistant</a>
+  </div>
+</nav>
+<div class="wrap">
+  <div class="eyebrow">How to work with me</div>
+  <h1>The unspoken <em>stuff</em>.</h1>
+  <p class="intro">Every team runs on things people rarely say out loud — when you focus best, how you like feedback, what drains you, what helps you feel included. This quick conversation gathers yours, so your teammates can work with you more thoughtfully from day one.</p>
+  <div class="consent">
+    <strong>The point of this:</strong> awareness and empathy, not labels or evaluation. Your answers become a short "how to work with me" profile for the team — there are no wrong answers and nothing here is a test. Anything you'd rather not answer is optional; skip freely.
+    <br><br>
+    <strong>You decide who sees each answer.</strong> Every question has a "🔒 Who sees this?" control, set to <strong>Team</strong> by default — change any answer to whatever feels right:
+    <ul style="margin:8px 0 0;padding-left:20px;line-height:1.7;">
+      <li><strong>Team</strong> — shown on your profile and visible to everyone.</li>
+      <li><strong>Manager</strong> — shared with your manager, not the whole team.</li>
+      <li><strong>AI-only</strong> — kept off your profile, but the collaboration assistant may use it to guide people <em>without revealing the detail itself</em> (for example, suggesting a better time to reach you without saying why).</li>
+      <li><strong>Private</strong> — kept entirely to yourself and never used.</li>
+    </ul>
+    <span style="display:inline-block;margin-top:10px;">You'll review everything — and can adjust any privacy setting — before your profile is saved.</span>
+  </div>
+
+  <div class="start-cue" id="startCue">
+    <div class="lbl">Let's begin — just answer below</div>
+    <div class="sub">Chat with the guide below and tap the answers that fit. It takes about 5 minutes.</div>
+    <div class="arrow">↓</div>
+  </div>
+
+  <div class="progress-dots" id="dots"></div>
+  <div class="chat" id="chat"></div>
+
+  <div class="input-row" id="inputRow">
+    <textarea id="input" placeholder="Type to add your own — or alongside your picks…" rows="1"></textarea>
+    <button class="send" id="send">Send</button>
+  </div>
+  <div class="err" id="err"></div>
+
+  <!-- PROFILE PREVIEW -->
+  <div class="preview" id="preview">
+    <div class="edit-notice">✏️ This is your draft — <strong>everything below is editable</strong>. Click any text to reword or delete it, soften anything too personal, or tap × to remove a tag. Nothing is saved until you download.</div>
+    <div class="privacy-note">🔒 <strong>You control who sees each part.</strong> Use the "Who sees this" menu on each field: <strong>Team</strong> (everyone), <strong>Manager</strong> (your manager only), <strong>AI-only</strong> (the assistant can use it to guide people without revealing it), or <strong>Private</strong> (kept off your profile entirely). Defaults are set for you — adjust any you like.</div>
+    <div class="card" id="card"></div>
+    <div class="actions">
+      <button class="btn-primary" id="download">⬇ Download my profile page</button>
+      <button class="btn-ghost" id="redo">Start over</button>
+    </div>
+    <p class="hint">Send the downloaded file to your manager, or drop it in the shared team drive. They'll add the link to the roster.</p>
+  </div>
+</div>
+
+<script>
+/* ============ CONFIG: the areas the AI explores ============ */
+const TOPICS = [
+  "their name and role on the team",
+  "their typical working hours and timezone, and when they're most focused vs. most reachable",
+  "how they prefer to communicate (async vs real-time, which channels for what, how quickly they expect replies)",
+  "how they like to receive feedback (in the moment vs scheduled, direct vs gentle, public vs private, written vs spoken)",
+  "their comfort level in meetings (speaking up live vs reflecting first, big groups vs small, camera on/off) — frame as preference, not deficiency",
+  "what they're genuinely good at — their strengths",
+  "what tends to stress them or drain them at work, and what conditions bring out their best",
+  "what they want to learn or grow into",
+  "any cultural, personal, accessibility, or life considerations they'd like the team to be aware of (clearly optional, no pressure)",
+  "what helps them feel included, supported, and like they belong on a team",
+  "one light, human question to round it out (optional)"
+];
+
+const SYSTEM = `You are a warm, curious onboarding host helping a new team member introduce themselves. You guide a friendly conversation covering these areas, roughly in order, ONE at a time:
+${TOPICS.map((t,i)=>`${i+1}. ${t}`).join("\n")}
+
+You respond ONLY with a single JSON object (no markdown, no backticks, no text outside it). Use this exact shape:
+{
+  "reaction": "a brief warm one-liner reacting to their last answer, or empty string on the very first question",
+  "question": "the next question, short and conversational",
+  "options": ["3 to 5 easy tap-able example answers phrased in first person, e.g. 'I prefer async — write it down'"],
+  "multi": false,
+  "optional": false,
+  "done": false
+}
+
+Rules:
+- Ask ONE question per turn. Keep it warm and human, like a thoughtful colleague, not a form.
+- The purpose is to surface the things teams usually leave unspoken — so people can work together with more awareness, empathy, and intention. You are NOT diagnosing, scoring, or labeling anyone. Never imply a preference is a weakness. Frame everything as "here's how to work well with me."
+- ALWAYS provide 3-5 "options" — realistic, specific, first-person example answers they can tap. They can also type their own, so options are suggestions not limits.
+- Set "multi": true when several answers could reasonably apply together (e.g. strengths, stressors, communication prefs, what helps them feel included). ALWAYS set "multi": true for the cultural/personal/accessibility/life-context question and any other open-ended "is there anything you'd like to share" question, since people often have more than one thing. Otherwise false.
+- Set "optional": true for the meeting-comfort, cultural/personal/accessibility, and light human questions — anything sensitive — so they can skip freely without explanation.
+- For the name/role question, options can be empty [] since that's free text.
+- Aim for about 10-11 questions covering all areas. When all areas are covered, return {"done": true} (other fields empty).
+- Output JSON only. Nothing else.`;
+
+const PROFILE_PROMPT = `Based on the full conversation above, produce ONLY a JSON object (no markdown, no backticks, no preamble) for a team "how to work with me" profile. The purpose is team awareness and empathy, NOT labeling or evaluating the person. Use this exact shape:
+{
+  "name": "",
+  "role": "",
+  "tagline": "a short, warm one-liner in their own spirit",
+  "hours": "their working hours, timezone, and when they're focused vs reachable",
+  "communication": "how they prefer to communicate and expected response pace",
+  "urgency": "how to reach them for urgent vs non-urgent matters",
+  "feedback": "how they like to receive feedback",
+  "meetings": "their meeting participation preferences, framed positively",
+  "strengths": ["", "", ""],
+  "stressors": "what drains them and what conditions bring out their best, 1-2 sentences",
+  "growth": "what they want to learn or grow into",
+  "considerations": "any cultural, personal, accessibility, or life context they chose to share, or empty string if skipped",
+  "support": "what helps them feel included and supported",
+  "humanNote": "a light personal note if they shared one, else empty string"
+}
+Fill fields ONLY from what they actually said — never invent or infer sensitive details. Use empty string or empty array if a topic wasn't covered or was skipped. Keep each field tight, warm, and in service of helping teammates work well with this person.`;
+
+/* ============ DEMO MODE (no API — for static hosting / class demo) ============
+   Runs a scripted version of the interview with the same UI. Each step maps to a
+   profile field so we can build the profile locally with zero API calls. */
+const DEMO_SCRIPT = [
+  {field:null, key:"name", reaction:"", question:"Hi! I'm here to help your teammates get to know how you work best. Let's start simple — what's your name and role on the team?", options:[], multi:false, optional:false},
+  {field:"hours", reaction:"Great to meet you!", question:"What are your typical working hours and timezone — and when do you tend to be most focused vs. most reachable?", options:["9–5 in EST, sharpest in the morning","Flexible hours, best after lunch","Early bird — online by 7, done by 3","I block mornings for focus, afternoons for meetings"], multi:true, optional:false},
+  {field:"communication", reaction:"That's really useful to know.", question:"How do you prefer to communicate day to day?", options:["Async first — write it down","Quick things in chat, big things in a call","I check messages in batches, not instantly","A same-day reply is my norm"], multi:true, optional:false},
+  {field:"urgency", reaction:"Helpful to know how to reach you when it matters.", question:"How should people reach you for urgent things vs. things that can wait?", options:["Urgent: call or text me directly","Urgent: tag me in chat with 'urgent'","Non-urgent: email or a normal message is fine","Please don't mark things urgent unless they truly are"], multi:true, optional:false},
+  {field:"feedback", reaction:"Makes sense.", question:"How do you like to receive feedback?", options:["Direct and in the moment","Gentle, with a bit of context","Scheduled, not surprise","In private rather than in a group","In writing so I can sit with it"], multi:true, optional:false},
+  {field:"meetings", reaction:"Good to know — that helps people include you well.", question:"How do you feel about participating in meetings? (No wrong answer — it just helps people bring you in the right way.)", options:["Happy to speak up live","I do better with a pre-read","I warm up more in small groups","I often think first, share after","Camera-off helps me focus"], multi:true, optional:true},
+  {field:"strengths", reaction:"Love that.", question:"What are you genuinely good at — the things teammates come to you for?", options:["Strategy & big-picture thinking","Writing & communication","Facilitation","Problem-solving","Mentoring others","Getting into the details"], multi:true, optional:false},
+  {field:"stressors", reaction:"Thank you — that's the kind of thing teams rarely say out loud.", question:"What tends to drain you at work, and what conditions bring out your best?", options:["Unclear priorities stress me out","Too many meetings drain me","I thrive with focused, uninterrupted time","Last-minute changes are hard for me","I do best with clear ownership"], multi:true, optional:false},
+  {field:"growth", reaction:"That's a great thing to be intentional about.", question:"What would you like to learn or grow into?", options:["Leadership & people skills","Deeper technical skills","Public speaking / presenting","Strategy & product thinking","Better work-life balance"], multi:true, optional:false},
+  {field:"considerations", reaction:"Thank you for trusting the team with that.", question:"This one is completely optional — is there anything cultural, personal, accessibility-related, or just life context you'd like the team to be aware of? Only share what feels right for you.", options:["I observe religious holidays the team may not","I'm caregiving outside work hours","I'm most productive outside 9–5","English is my second language","I have accessibility needs worth noting"], multi:true, optional:true},
+  {field:"support", reaction:"That really matters.", question:"What helps you feel included, supported, and like you belong on a team?", options:["Being looped in early on decisions","Regular check-ins with my manager","Public recognition for good work","Space to work independently","Knowing it's safe to ask questions"], multi:true, optional:false},
+  {field:"humanNote", reaction:"Love it.", question:"Last one, just for fun — tell us something human about you. (Optional!)", options:["Coffee keeps me alive","Weekend hiker","Parent of small humans","Always have a side project going","Ask me about my dog"], multi:true, optional:true},
+];
+let demoMode=false;
+let demoStep=0;
+const demoAnswers={}; // field -> text
+
+// every question gets an in-the-moment privacy choice, defaulting to Team
+const FIELD_DEFAULT_TIER={
+  hours:'team', communication:'team', urgency:'team', feedback:'team',
+  meetings:'team', strengths:'team', stressors:'team', growth:'team',
+  considerations:'team', support:'team', humanNote:'team'
+};
+// privacy tiers the person picks during intake (feeds the profile + review step)
+const intakeTiers={};
+
+/* Warm, varied, keyword-aware reactions for demo mode — no AI needed.
+   Each reaction reflects a little of what the person actually said, which is
+   what makes scripted responses feel personal rather than canned. */
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function firstClause(text){
+  // grab a short, readable snippet of what they said to echo back
+  let t=(text||'').replace(/\s*\(skipped\)\s*/i,'').trim();
+  let part=t.split(',')[0].trim();
+  if(part.length>42)part=part.slice(0,40).trim()+'…';
+  return part;
+}
+function has(text,words){const t=(text||'').toLowerCase();return words.some(w=>t.includes(w));}
+
+function demoReaction(step, answer){
+  const f=step.field, a=answer||'';
+  if(a==='(skipped)'||a.trim()===''){
+    return pick(["Totally fine to skip — thanks!","No worries at all, let's keep going.","All good — moving on."]);
+  }
+  const echo=firstClause(a);
+  switch(f){
+    case 'hours':
+      if(has(a,['morning','early','sharp','7','am']))return pick([`A morning person — good to know. I'll make a note that you're sharpest early.`,`Love that you know your peak hours. Mornings it is.`]);
+      if(has(a,['afternoon','after lunch','later']))return pick([`Got it — you hit your stride later in the day. Useful for the team to know.`,`Afternoon focus, noted. That helps people time things for you.`]);
+      return pick([`Thanks — knowing your "${echo}" rhythm makes it so much easier to work around.`,`That's really helpful. People can plan around your hours now.`]);
+    case 'communication':
+      if(has(a,['async','write','written','batch']))return pick([`An async-first thinker — that fits a distributed team beautifully.`,`Makes sense. Writing things down keeps everyone in the loop, wherever they are.`]);
+      if(has(a,['call','real-time','chat','quick']))return pick([`Good to know you like to talk things through in the moment.`,`Noted — quick and direct when it counts.`]);
+      return pick([`That's genuinely useful — "${echo}" tells people exactly how to reach you.`,`Great, that clears up a lot of little day-to-day friction.`]);
+    case 'urgency':
+      return pick([`Good — now people know how to reach you when it's actually urgent, and when it can wait.`,`That's really practical. Knowing your urgent vs. non-urgent channels prevents a lot of missed messages.`]);
+    case 'feedback':
+      if(has(a,['direct','in the moment','clear']))return pick([`Straight and direct — refreshing. People will know they can be candid with you.`,`Got it: no cushioning needed. That's a gift to your teammates, honestly.`]);
+      if(has(a,['gentle','context','private','writing']))return pick([`Thoughtful — a little care and context goes a long way. Noted.`,`That's good to know. Feedback lands better when it's delivered the way you need it.`]);
+      return pick([`Thanks for being clear about this — "${echo}" is exactly the kind of thing people guess wrong otherwise.`,`Really helpful. This is where mismatches usually happen, so naming it matters.`]);
+    case 'meetings':
+      if(has(a,['speak','live','happy','comfortable']))return pick([`Comfortable jumping in — great, you'll help keep the energy up.`,`Nice, people can count on you to get the conversation going.`]);
+      if(has(a,['pre-read','think first','warm up','small','camera']))return pick([`That's so useful to know — the team can bring you in the way that works for you.`,`Appreciated. A little prep or space, and you'll do your best thinking. Noted.`]);
+      return pick([`Thank you — "${echo}" helps people include you well rather than assuming.`,`Good to know. This is exactly how teams end up leaving quieter voices out, so naming it helps.`]);
+    case 'strengths':
+      return pick([`${echo} — that's a real asset. Now people know who to come to.`,`Love it. "${echo}" is the kind of strength a team leans on.`,`Nice mix — that's genuinely good for people to know.`]);
+    case 'stressors':
+      return pick([`Thank you for naming that — the stuff that drains us rarely gets said out loud.`,`That's brave and useful to share. Knowing what brings out your best is half the battle.`,`Really appreciate the honesty here — "${echo}" is good for the team to be mindful of.`]);
+    case 'growth':
+      return pick([`Love that you're intentional about it. "${echo}" is a great thing to grow toward.`,`That's a solid direction — good for your manager to know so they can find you the right chances.`]);
+    case 'considerations':
+      return pick([`Thank you for trusting the team with that — it genuinely helps people be considerate.`,`Appreciated. Little bits of context like this make a real difference.`]);
+    case 'support':
+      return pick([`That really matters — "${echo}" is exactly the kind of thing that helps people feel they belong.`,`Beautiful. Knowing this helps the whole team show up better for you.`]);
+    case 'humanNote':
+      return pick([`Ha — love it. "${echo}" is a great little detail to share.`,`That's wonderful — the human stuff is what makes a team feel like a team.`]);
+    default:
+      return pick([`Thanks for sharing that!`,`Great — really helpful.`]);
+  }
+}
+
+/* ============ STATE ============ */
+let history = [];
+let done = false;
+const chat = document.getElementById('chat');
+const input = document.getElementById('input');
+const sendBtn = document.getElementById('send');
+const dots = document.getElementById('dots');
+TOPICS.forEach(()=>{const d=document.createElement('div');d.className='dot';dots.appendChild(d);});
+let topicProgress = 0;
+
+input.addEventListener('input',()=>{input.style.height='auto';input.style.height=Math.min(input.scrollHeight,140)+'px';refreshContinue();});
+input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleSend();}});
+sendBtn.onclick=handleSend;
+
+function addMsg(text,who){
+  const m=document.createElement('div');m.className='msg '+who;m.textContent=text;chat.appendChild(m);
+  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
+function showTyping(){
+  const t=document.createElement('div');t.className='msg ai';t.id='typing';
+  t.innerHTML='<div class="typing"><span></span><span></span><span></span></div>';
+  chat.appendChild(t);window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
+function hideTyping(){const t=document.getElementById('typing');if(t)t.remove();}
+function showErr(msg){const e=document.getElementById('err');e.textContent=msg;e.style.display='block';}
+
+function parseQ(raw){
+  let s=raw.replace(/```json|```/g,'').trim();
+  const a=s.indexOf('{'),b=s.lastIndexOf('}');
+  if(a>=0&&b>=0)s=s.slice(a,b+1);
+  return JSON.parse(s);
+}
+
+function advanceDots(){ if(topicProgress<TOPICS.length){dots.children[topicProgress].classList.add('on');topicProgress++;} }
+
+// render AI turn from a structured question object
+function showQuestion(q){
+  if(q.reaction)addMsg(q.reaction,'ai');
+  addMsg(q.question,'ai');
+  renderOptions(q);
+}
+// demo mode: reaction is handled separately, so show just the question
+function showQuestionNoReaction(q){
+  addMsg(q.question,'ai');
+  renderOptions(q);
+}
+
+let selected=new Set();
+let currentQ=null;
+function renderOptions(q){
+  selected=new Set();
+  currentQ=q;
+  const opts=Array.isArray(q.options)?q.options.filter(Boolean):[];
+  if(opts.length===0 && !q.optional){ sendBtn.disabled=false; input.focus(); return; }
+  const box=document.createElement('div');box.className='options';box.id='optsBox';
+  if(q.multi)box.innerHTML='<div class="multi-hint">Tap any that fit — and add your own in the box below if you like</div>';
+  let confirmBtn;
+  opts.forEach(o=>{
+    const c=document.createElement('button');c.className='opt-chip';c.textContent=o;
+    c.onclick=()=>{
+      if(q.multi){
+        if(selected.has(o)){selected.delete(o);c.classList.remove('sel');}
+        else{selected.add(o);c.classList.add('sel');}
+        refreshContinue();
+      }else{
+        // single-select: tap submits immediately, plus any typed note
+        const extra=input.value.trim();
+        submitAnswer(extra?`${o} — ${extra}`:o);
+      }
+    };
+    box.appendChild(c);
+  });
+  if(q.optional){
+    const sk=document.createElement('button');sk.className='opt-chip skip';sk.textContent='Skip this one';
+    sk.onclick=()=>submitAnswer('(skipped)');
+    box.appendChild(sk);
+  }
+  if(q.multi){
+    confirmBtn=document.createElement('button');confirmBtn.className='confirm-multi';confirmBtn.id='confirmMulti';confirmBtn.textContent='Continue →';
+    confirmBtn.style.display='none';
+    confirmBtn.onclick=()=>submitCombined();
+    box.appendChild(confirmBtn);
+  }
+  // inline privacy control — shown on every real question, defaulting to Team
+  const field=currentPrivacyField(q);
+  if(field){
+    const def=FIELD_DEFAULT_TIER[field]||'team';
+    if(!intakeTiers[field])intakeTiers[field]=def;
+    const wrap=document.createElement('div');wrap.className='privacy-inline';
+    const tiers=[['team','Team'],['manager','Manager'],['ai','AI-only'],['private','Private']];
+    wrap.innerHTML='<span class="pl">🔒 Who sees this?</span>';
+    tiers.forEach(([t,label])=>{
+      const b=document.createElement('button');b.className='pi-chip'+(intakeTiers[field]===t?' on':'');b.dataset.t=t;b.textContent=label;
+      b.onclick=()=>{
+        intakeTiers[field]=t;
+        wrap.querySelectorAll('.pi-chip').forEach(x=>x.classList.remove('on'));
+        b.classList.add('on');
+      };
+      wrap.appendChild(b);
+    });
+    box.appendChild(wrap);
+  }
+  chat.appendChild(box);
+  sendBtn.disabled=false; // typing always allowed
+  input.focus();
+  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
+// show/hide the multi-select Continue button based on selections OR typed text
+function refreshContinue(){
+  const btn=document.getElementById('confirmMulti');
+  if(!btn)return;
+  const has=selected.size>0||input.value.trim().length>0;
+  btn.style.display=has?'inline-block':'none';
+}
+// merge tapped options + typed text into one recorded answer
+function submitCombined(){
+  const typed=input.value.trim();
+  const parts=[...selected];
+  if(typed)parts.push(typed);
+  if(parts.length)submitAnswer(parts.join(', '));
+}
+function clearOptions(){const b=document.getElementById('optsBox');if(b)b.remove();}
+// identify which profile field the current question maps to (for the privacy control).
+// Returns null for the name/role step, which needs no privacy choice.
+function currentPrivacyField(q){
+  if(demoMode){ return FIELD_DEFAULT_TIER[currentDemoField]?currentDemoField:null; }
+  // live AI mode: infer the field from the question text
+  const t=(q&&q.question?q.question:'').toLowerCase();
+  if(/working hours|timezone|time zone|focus|reachable/.test(t))return 'hours';
+  if(/urgent|non-urgent|reach you for/.test(t))return 'urgency';
+  if(/communicate|communication|channel|async/.test(t))return 'communication';
+  if(/feedback/.test(t))return 'feedback';
+  if(/meeting|speak up|participat/.test(t))return 'meetings';
+  if(/good at|strength|come to you/.test(t))return 'strengths';
+  if(/drain|stress|brings out your best|energi/.test(t))return 'stressors';
+  if(/learn|grow|develop/.test(t))return 'growth';
+  if(/cultural|personal|accessibilit|life context|aware of/.test(t))return 'considerations';
+  if(/included|supported|belong/.test(t))return 'support';
+  if(/human|fun|for fun|something about you/.test(t))return 'humanNote';
+  return null;
+}
+
+async function callClaude(messages,system){
+  const res=await fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system,messages})
+  });
+  if(!res.ok)throw new Error("API "+res.status);
+  const data=await res.json();
+  return data.content.filter(b=>b.type==="text").map(b=>b.text).join("\n").trim();
+}
+
+async function kickoff(){
+  showTyping();
+  try{
+    const raw=await callClaude([{role:"user",content:"Greet me warmly and ask your first question. Respond in the JSON format."}],SYSTEM);
+    hideTyping();
+    history.push({role:"user",content:"Greet me warmly and ask your first question. Respond in the JSON format."});
+    history.push({role:"assistant",content:raw});
+    showQuestion(parseQ(raw));
+  }catch(e){
+    // No API available (e.g. static hosting) — switch to scripted demo mode seamlessly.
+    hideTyping();
+    demoMode=true;
+    startDemo();
+  }
+}
+
+// ---- demo engine ----
+function startDemo(){
+  demoStep=0;
+  const first=DEMO_SCRIPT[0];
+  currentDemoField=first.field; currentDemoKey=first.key;
+  showQuestion(first);
+}
+let currentDemoField=null, currentDemoKey=null;
+function demoNext(text){
+  // record the previous answer under its field
+  const prev=DEMO_SCRIPT[demoStep];
+  if(prev){
+    if(prev.key==='name')demoAnswers._name=text;
+    else if(prev.field)demoAnswers[prev.field]=text;
+  }
+  demoStep++;
+  // warm, personalized reaction to what they just said (except after the name step,
+  // where the next question already greets them)
+  const reactToPrev = prev && prev.key!=='name' ? demoReaction(prev,text) : (prev&&prev.key==='name'?`Lovely to meet you${firstName(text)?`, ${firstName(text)}`:''}!`:'');
+  if(demoStep>=DEMO_SCRIPT.length){
+    done=true;
+    dots.querySelectorAll('.dot').forEach(d=>d.classList.add('on'));
+    if(reactToPrev)addMsg(reactToPrev,'ai');
+    addMsg("That's everything — thank you for sharing all of that. Putting your profile together now…",'ai');
+    setTimeout(buildDemoProfile,600);
+    return;
+  }
+  const q=DEMO_SCRIPT[demoStep];
+  currentDemoField=q.field; currentDemoKey=q.key;
+  if(reactToPrev)addMsg(reactToPrev,'ai');
+  showTyping();
+  setTimeout(()=>{hideTyping();showQuestionNoReaction(q);},520); // small pause so it feels conversational
+}
+// grab a plausible first name from the free-text name/role answer
+function firstName(text){
+  let t=(text||'').split(/,|—|-| as | is /i)[0].trim();
+  let w=t.split(/\s+/)[0]||'';
+  // avoid echoing something that isn't a name
+  if(w.length>1&&w.length<20&&/^[A-Za-z][A-Za-z'’-]*$/.test(w))return w;
+  return '';
+}
+function buildDemoProfile(){
+  // parse name/role from the free-text first answer
+  let name=demoAnswers._name||'New Teammate', role='';
+  const m=(demoAnswers._name||'').split(/,|—|-| as | is /i);
+  if(m.length>1){name=m[0].trim();role=m.slice(1).join(', ').trim();}
+  const clean=v=>(!v||v==='(skipped)')?'':v;
+  const listify=v=>clean(v)?clean(v).split(',').map(s=>s.trim()).filter(Boolean):[];
+  profileData={
+    name, role,
+    tagline:"", // left for the user to add in the editable draft
+    hours:clean(demoAnswers.hours),
+    communication:clean(demoAnswers.communication),
+    urgency:clean(demoAnswers.urgency),
+    feedback:clean(demoAnswers.feedback),
+    meetings:clean(demoAnswers.meetings),
+    strengths:listify(demoAnswers.strengths),
+    stressors:clean(demoAnswers.stressors),
+    growth:clean(demoAnswers.growth),
+    considerations:clean(demoAnswers.considerations),
+    support:clean(demoAnswers.support),
+    humanNote:clean(demoAnswers.humanNote),
+  };
+  renderPreview(profileData);
+}
+
+// called both by typed input and by tapping an option
+async function submitAnswer(text){
+  if(done)return;
+  const cue=document.getElementById('startCue'); if(cue)cue.classList.add('gone'); // cue has served its purpose
+  currentQ=null; selected=new Set();
+  clearOptions();
+  addMsg(text,'user');
+  input.value='';input.style.height='auto';
+  sendBtn.disabled=true;
+  advanceDots();
+  if(demoMode){ demoNext(text); return; }
+  history.push({role:"user",content:text});
+  showTyping();
+  try{
+    const raw=await callClaude(history,SYSTEM);
+    hideTyping();
+    history.push({role:"assistant",content:raw});
+    const q=parseQ(raw);
+    if(q.done){
+      done=true;
+      dots.querySelectorAll('.dot').forEach(d=>d.classList.add('on'));
+      addMsg("Perfect — that's everything. Putting your profile together now…",'ai');
+      await generateProfile();
+    }else{
+      showQuestion(q);
+    }
+  }catch(e){hideTyping();showErr("Something went wrong reaching the AI. Try again.");sendBtn.disabled=false;}
+}
+
+function handleSend(){
+  if(done)return;
+  // on a multi-select question, combine typed text with any tapped options
+  if(currentQ&&currentQ.multi){
+    const typed=input.value.trim();
+    if(!typed&&selected.size===0)return;
+    submitCombined();
+    return;
+  }
+  const text=input.value.trim();
+  if(!text)return;
+  submitAnswer(text);
+}
+
+let profileData=null;
+async function generateProfile(){
+  showTyping();
+  try{
+    const msgs=[...history,{role:"user",content:PROFILE_PROMPT}];
+    let raw=await callClaude(msgs,"You output only valid JSON. No markdown, no backticks.");
+    raw=raw.replace(/```json|```/g,'').trim();
+    profileData=JSON.parse(raw);
+    hideTyping();
+    renderPreview(profileData);
+  }catch(e){hideTyping();showErr("Couldn't build the profile. Try starting over.");}
+}
+
+function renderPreview(p){
+  document.getElementById('inputRow').style.display='none';
+  const card=document.getElementById('card');
+  // name & role are always present & editable; tagline editable; rest conditional
+  card.innerHTML=`
+    <h2 contenteditable data-key="name">${esc(p.name||'New Teammate')}</h2>
+    <div class="role" contenteditable data-key="role">${esc(p.role||'Role / title')}</div>
+    ${tagField(p.tagline)}
+    ${txtField('hours','Hours & timezone',p.hours)}
+    ${txtField('communication','How I communicate',p.communication)}
+    ${txtField('urgency','Urgent vs. non-urgent',p.urgency)}
+    ${txtField('feedback','Feedback that works for me',p.feedback)}
+    ${txtField('meetings','In meetings',p.meetings)}
+    ${chipField('strengths','Strengths',p.strengths)}
+    ${txtField('stressors','What drains me / brings out my best',p.stressors)}
+    ${txtField('growth','Growing toward',p.growth)}
+    ${txtField('considerations','Good to know',p.considerations)}
+    ${txtField('support','What helps me feel supported',p.support)}
+    ${txtField('humanNote','A little about me',p.humanNote)}
+  `;
+  wireChipControls(card);
+  document.getElementById('preview').classList.add('show');
+  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
+
+// editable single-text field (always rendered so users can add to skipped ones)
+// sensible default visibility per field
+const DEFAULT_TIER={
+  tagline:'team', hours:'team', communication:'team', urgency:'team',
+  feedback:'team', meetings:'team', strengths:'team', stressors:'team',
+  growth:'team', considerations:'team', support:'team', humanNote:'team'
+};
+function visSelect(key){
+  // a tier the person already chose during the intake wins over the default
+  const t=intakeTiers[key]||DEFAULT_TIER[key]||'team';
+  const opt=(v,l)=>`<option value="${v}" ${t===v?'selected':''}>${l}</option>`;
+  return `<span class="vis"><label>Who sees this</label>
+    <select data-vis="${key}" data-tier="${t}" onchange="this.setAttribute('data-tier',this.value)">
+      ${opt('team','Team')}${opt('manager','Manager')}${opt('ai','AI-only')}${opt('private','Private')}
+    </select></span>`;
+}
+function txtField(key,label,val){
+  return `<div class="field removable" data-field="${key}">
+    <span class="field-x" title="Remove this section">remove ✕</span>
+    <div class="field-head"><h4>${label}</h4>${visSelect(key)}</div>
+    <p contenteditable data-key="${key}">${esc(val||'')}</p>
+  </div>`;
+}
+function tagField(val){
+  return `<div class="field removable" data-field="tagline">
+    <span class="field-x" title="Remove this section">remove ✕</span>
+    <div class="field-head"><span></span>${visSelect('tagline')}</div>
+    <p contenteditable data-key="tagline" style="font-family:'Fraunces',serif;font-size:19px;font-style:italic;color:var(--teal)">${esc(val||'')}</p>
+  </div>`;
+}
+// editable chip list
+function chipField(key,label,arr_){
+  const list=(Array.isArray(arr_)?arr_.filter(Boolean):[]);
+  return `<div class="field removable" data-field="${key}">
+    <span class="field-x" title="Remove this section">remove ✕</span>
+    <div class="field-head"><h4>${label}</h4>${visSelect(key)}</div>
+    <div class="chips" data-chips="${key}">
+      ${list.map(chipHTML).join('')}
+      <button class="chip-add" data-add="${key}">+ add</button>
+    </div>
+  </div>`;
+}
+function chipHTML(x){return `<span class="chip edit">${esc(x)}<span class="x" title="remove">×</span></span>`;}
+
+function wireChipControls(root){
+  // remove whole field
+  root.querySelectorAll('.field-x').forEach(b=>b.onclick=()=>b.closest('.field').remove());
+  // remove a chip
+  root.addEventListener('click',e=>{
+    if(e.target.classList.contains('x')){ e.target.closest('.chip').remove(); }
+    if(e.target.classList.contains('chip-add')){
+      const txt=prompt('Add a strength:');
+      if(txt&&txt.trim()){
+        const span=document.createElement('span');span.className='chip edit';
+        span.innerHTML=esc(txt.trim())+'<span class="x" title="remove">×</span>';
+        e.target.parentNode.insertBefore(span,e.target);
+      }
+    }
+  });
+}
+
+function field(label,inner){return `<div class="field"><h4>${label}</h4>${inner}</div>`;}
+function chips(a){return `<div class="chips">${a.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</div>`;}
+function arr(a){return Array.isArray(a)&&a.filter(Boolean).length>0;}
+function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+// read the user's edited values back out of the DOM
+function collectEdited(){
+  const card=document.getElementById('card');
+  const out={};
+  const present=k=>card.querySelector(`.field[data-field="${k}"]`);
+  const txt=k=>{const el=card.querySelector(`[data-key="${k}"]`);return el?el.innerText.trim():'';};
+  out.name=txt('name'); out.role=txt('role');
+  ['tagline','hours','communication','urgency','feedback','meetings','stressors','growth','considerations','support','humanNote']
+    .forEach(k=>{ out[k]=present(k)?txt(k):''; });
+  // strengths chips
+  if(present('strengths')){
+    out.strengths=[...card.querySelectorAll('[data-chips="strengths"] .chip')]
+      .map(c=>c.firstChild.textContent.trim()).filter(Boolean);
+  }else out.strengths=[];
+  // per-field visibility tiers chosen by the user
+  out._tiers={};
+  card.querySelectorAll('select[data-vis]').forEach(sel=>{ out._tiers[sel.dataset.vis]=sel.value; });
+  return out;
+}
+
+/* ============ DOWNLOAD: self-contained profile page ============ */
+document.getElementById('download').onclick=()=>{
+  const edited=collectEdited();
+  if(!edited.name){alert('Add your name before downloading.');return;}
+  const html=buildProfilePage(edited);
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  const slug=(edited.name||'teammate').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  a.download=slug+'-profile.html';
+  a.click();
+};
+document.getElementById('redo').onclick=()=>location.reload();
+
+function buildProfilePage(p){
+  const tiers=p._tiers||{};
+  const tierOf=k=>tiers[k]||'team';
+  const arr=a=>Array.isArray(a)&&a.filter(Boolean).length>0;
+  const C=a=>arr(a)?`<div class="chips">${a.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</div>`:'';
+  // a field renders visibly only if Team or Manager; Manager gets a small badge; AI-only/Private are hidden from the page.
+  const badge=k=>tierOf(k)==='manager'?` <span class="mgr">manager-visible</span>`:'';
+  const F=(key,label,inner)=>{ if(!inner)return ''; const t=tierOf(key); if(t==='ai'||t==='private')return ''; return `<div class="field"><h4>${label}${badge(key)}</h4>${inner}</div>`; };
+  // count what's hidden so we can note it honestly
+  let hiddenCount=0;
+  const keys=['tagline','hours','communication','urgency','feedback','meetings','strengths','stressors','growth','considerations','support','humanNote'];
+  keys.forEach(k=>{ const has=(k==='strengths')?arr(p.strengths):!!p[k]; if(has&&(tierOf(k)==='ai'||tierOf(k)==='private'))hiddenCount++; });
+  // embedded machine-readable profile (values + tiers) for the collaboration assistant
+  const dataBlob = { name:p.name, role:p.role, fields:{} };
+  keys.forEach(k=>{ const v=(k==='strengths')?(arr(p.strengths)?p.strengths.join(', '):''):(p[k]||''); if(v)dataBlob.fields[k]={value:v,tier:tierOf(k)}; });
+
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>${esc(p.name)} — Team Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Spline+Sans+Mono:wght@400;500&family=Albert+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1c2230;--paper:#ffffff;--paper-2:#e9ecf1;--copper:#3d6a9e;--teal:#1a2b45;--teal-bright:#3d6a9e;--line:#d3d8e0;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Albert Sans',sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;min-height:100vh;display:grid;place-items:center;padding:40px 20px;
+background-image:none;}
+.card{background:#f7f9fb;border:1px solid var(--line);border-radius:22px;padding:42px;max-width:620px;width:100%;box-shadow:0 16px 50px rgba(20,32,28,0.14);}
+h2{font-family:'Fraunces',serif;font-weight:900;font-size:38px;letter-spacing:-0.02em;}
+.role{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-bright);margin:5px 0 24px;}
+.tagline{font-family:'Fraunces',serif;font-size:20px;font-style:italic;color:var(--teal);margin-bottom:24px;}
+.field{margin-bottom:20px;}
+.field h4{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--copper);margin-bottom:6px;}
+.field p{font-size:15.5px;color:#2e3833;}
+.mgr{font-family:'Spline Sans Mono',monospace;font-size:8.5px;letter-spacing:0.08em;background:#e2e0f0;color:#453a8c;padding:2px 6px;border-radius:5px;text-transform:uppercase;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{background:var(--paper-2);border:1px solid var(--line);border-radius:99px;padding:5px 14px;font-size:13.5px;}
+.priv-foot{margin-top:22px;padding-top:14px;border-top:1px dashed var(--line);font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:0.03em;color:#9aa2b0;}
+</style></head><body><div class="card">
+<h2>${esc(p.name)}</h2><div class="role">${esc(p.role)}</div>
+${p.tagline&&tierOf('tagline')!=='ai'&&tierOf('tagline')!=='private'?`<div class="tagline">"${esc(p.tagline)}"</div>`:''}
+${F('hours','Hours & timezone',p.hours?`<p>${esc(p.hours)}</p>`:'')}
+${F('communication','How I communicate',p.communication?`<p>${esc(p.communication)}</p>`:'')}
+${F('urgency','Urgent vs. non-urgent',p.urgency?`<p>${esc(p.urgency)}</p>`:'')}
+${F('feedback','Feedback that works for me',p.feedback?`<p>${esc(p.feedback)}</p>`:'')}
+${F('meetings','In meetings',p.meetings?`<p>${esc(p.meetings)}</p>`:'')}
+${F('strengths','Strengths',C(p.strengths))}
+${F('stressors','What drains me / brings out my best',p.stressors?`<p>${esc(p.stressors)}</p>`:'')}
+${F('growth','Growing toward',p.growth?`<p>${esc(p.growth)}</p>`:'')}
+${F('considerations','Good to know',p.considerations?`<p>${esc(p.considerations)}</p>`:'')}
+${F('support','What helps me feel supported',p.support?`<p>${esc(p.support)}</p>`:'')}
+${F('humanNote','A little about me',p.humanNote?`<p>${esc(p.humanNote)}</p>`:'')}
+${hiddenCount>0?`<div class="priv-foot">🔒 ${hiddenCount} field${hiddenCount>1?'s are':' is'} set to AI-only or Private and kept off this public profile — used by the collaboration assistant only as ${esc(p.name.split(' ')[0])} allowed.</div>`:''}
+</div>
+<script type="application/json" id="teamlens-profile">${JSON.stringify(dataBlob)}<\/script>
+</body></html>`;
+}
+
+kickoff();
+</script>
+</body>
+</html>
