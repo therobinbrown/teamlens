@@ -67,6 +67,15 @@
   .answer .basis{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-size:12.5px;color:#8a92a0;font-family:'Spline Sans Mono',monospace;letter-spacing:0.02em;}
   .empty{color:#8a92a0;font-size:15px;padding:20px;text-align:center;}
 
+  /* viewer role toggle */
+  .viewas{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+  .viewas .vl{font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:#8a92a0;}
+  .viewas .seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;}
+  .viewas button{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.03em;padding:7px 14px;background:#fff;color:#5a6472;border:none;cursor:pointer;transition:all 0.15s;}
+  .viewas button+button{border-left:1.5px solid var(--line);}
+  .viewas button.on{background:var(--teal);color:#fff;}
+  .viewas .hint{font-size:12.5px;color:#8a92a0;}
+
   /* privacy legend + profile inspector */
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:34px;}
   @media(max-width:720px){.grid2{grid-template-columns:1fr;}}
@@ -113,6 +122,14 @@
 
 <main>
   <div class="controls">
+    <div class="viewas">
+      <span class="vl">Viewing as</span>
+      <div class="seg">
+        <button id="viewTeammate" class="on">Teammate</button>
+        <button id="viewManager">Their manager</button>
+      </div>
+      <span class="hint" id="viewHint">Manager-only details stay hidden and only shape advice discreetly.</span>
+    </div>
     <div class="ctrl-label">1 · Who do you want to work with?</div>
     <div class="people" id="people"></div>
     <div class="ctrl-label">2 · What do you want to know?</div>
@@ -133,7 +150,7 @@
       <h3>How privacy works</h3>
       <div class="sub">Every piece of a profile carries a visibility level. The assistant respects them — it can even let private information shape a recommendation without revealing the reason behind it.</div>
       <div class="tier"><span class="badge b-team">Team</span><span class="desc">Visible to everyone, and freely used in recommendations.</span></div>
-      <div class="tier"><span class="badge b-mgr">Manager</span><span class="desc">Shown to the person's manager; used in advice but not shown to peers.</span></div>
+      <div class="tier"><span class="badge b-mgr">Manager</span><span class="desc">Shown only to the person's manager (use the "Viewing as" toggle). For teammates, it stays hidden and only shapes advice.</span></div>
       <div class="tier"><span class="badge b-ai">AI-only</span><span class="desc">The assistant may use it to shape guidance <em>without disclosing the detail itself</em>.</span></div>
       <div class="tier"><span class="badge b-priv">Private</span><span class="desc">Never shown and never used in recommendations.</span></div>
     </div>
@@ -233,6 +250,7 @@ const SUGGESTED = [
 ];
 
 let selected=null;
+let viewerRole='teammate'; // 'teammate' | 'manager'
 const peopleEl=document.getElementById('people');
 const sugEl=document.getElementById('sugChips');
 const answersEl=document.getElementById('answers');
@@ -255,6 +273,20 @@ SUGGESTED.forEach(s=>{
 qEl.addEventListener('input',()=>{qEl.style.height='auto';qEl.style.height=Math.min(qEl.scrollHeight,130)+'px';});
 qEl.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask();}});
 document.getElementById('askBtn').onclick=ask;
+
+// viewer role toggle
+const btnT=document.getElementById('viewTeammate'), btnM=document.getElementById('viewManager'), vHint=document.getElementById('viewHint');
+function setRole(r){
+  viewerRole=r;
+  btnT.classList.toggle('on',r==='teammate');
+  btnM.classList.toggle('on',r==='manager');
+  vHint.textContent = r==='manager'
+    ? 'You can see manager-only details for this person.'
+    : 'Manager-only details stay hidden and only shape advice discreetly.';
+  if(selected!==null)renderInspect();
+}
+btnT.onclick=()=>setRole('teammate');
+btnM.onclick=()=>setRole('manager');
 
 /* ===== the assistant: keyword-matched, tier-respecting recommendations ===== */
 function ask(){
@@ -286,8 +318,13 @@ function recommend(p,q){
   const first=p.name.split(' ')[0];
   let rec='', used=[];
 
-  const showable=(key)=>{ // team + manager tiers can be quoted; ai/private cannot
-    const t=tierOf(p,key); return t==='team'||t==='manager';
+  // Team is always quotable. Manager is quotable ONLY when viewing as the manager.
+  // Otherwise manager/ai/private are never quoted.
+  const showable=(key)=>{
+    const t=tierOf(p,key);
+    if(t==='team')return true;
+    if(t==='manager')return viewerRole==='manager';
+    return false;
   };
   const quote=(key,label)=>{ if(showable(key)&&val(p,key)){used.push(label||key);return val(p,key);} return ''; };
 
@@ -300,7 +337,8 @@ function recommend(p,q){
   // FEEDBACK
   else if(has(q,['feedback','critique','review','criticism'])){
     const fb=quote('feedback','feedback preference');
-    if(fb){ rec=`When giving ${first} feedback: <strong>${fb}</strong> ${tierOf(p,'feedback')==='manager'?'(this preference is manager-visible, so keep the setting appropriately private.)':''}`; }
+    if(fb){ rec=`When giving ${first} feedback: <strong>${fb}</strong>${tierOf(p,'feedback')==='manager'?' <em>(manager-visible — keep this setting appropriately private.)</em>':''}`; }
+    else if(tierOf(p,'feedback')==='manager'){ rec=`${first} has shared a feedback preference, but it's set to manager-only — so I can't show it here. When in doubt, ask them directly how they'd like to receive feedback, or check with their manager.`; }
     else { rec=`${first} hasn't shared a feedback preference at a level I can show — when in doubt, ask how they'd like to receive it.`; }
   }
   // MEETING PREP / CLIENT MEETING / PRESENT
@@ -355,7 +393,7 @@ function lower(s){return s.charAt(0).toLowerCase()+s.slice(1);}
 /* ===== profile inspector: shows how each field is shared ===== */
 function renderInspect(){
   const p=TEAM[selected];
-  document.getElementById('inspectSub').textContent=`How ${p.name.split(' ')[0]}'s profile is shared. AI-only and Private fields are handled discreetly.`;
+  document.getElementById('inspectSub').textContent=`How ${p.name.split(' ')[0]}'s profile is shared${viewerRole==='manager'?', viewed as their manager':''}. AI-only and Private fields are handled discreetly.`;
   const labels={hours:'Hours',communication:'Communication',urgency:'Urgent vs non-urgent',feedback:'Feedback',meetings:'Meetings',assignments:'Assignments',strengths:'Strengths',support:'Feeling supported',note:'Personal note'};
   const badge={team:'b-team',manager:'b-mgr',ai:'b-ai',private:'b-priv'};
   const badgeText={team:'Team',manager:'Manager',ai:'AI-only',private:'Private'};
@@ -363,10 +401,14 @@ function renderInspect(){
   Object.keys(labels).forEach(k=>{
     const f=p.f[k]; if(!f||!f.v)return;
     const t=f.tier;
-    const shown=(t==='team'||t==='manager');
+    // Team always shown; Manager shown only to a manager viewer; ai/private never shown
+    const shown = t==='team' || (t==='manager'&&viewerRole==='manager');
+    const hiddenText = t==='ai' ? '(used to shape advice, not shown)'
+                     : t==='manager' ? '(manager-only — hidden from teammates)'
+                     : '(hidden)';
     html+=`<div class="inspect-field ${shown?'':'hidden-val'}">
       <div class="fl"><span class="fname">${labels[k]}</span><span class="badge ${badge[t]}">${badgeText[t]}</span></div>
-      <div class="fval">${shown?esc(f.v):(t==='ai'?'(used to shape advice, not shown)':'(hidden)')}</div>
+      <div class="fval">${shown?esc(f.v):hiddenText}</div>
     </div>`;
   });
   document.getElementById('inspect').innerHTML=html;
