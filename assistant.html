@@ -152,11 +152,10 @@
       <div class="tier"><span class="badge b-team">Team</span><span class="desc">Visible to everyone, and freely used in recommendations.</span></div>
       <div class="tier"><span class="badge b-mgr">Manager</span><span class="desc">Shown only to the person's manager (use the "Viewing as" toggle). For teammates, it stays hidden and only shapes advice.</span></div>
       <div class="tier"><span class="badge b-ai">AI-only</span><span class="desc">The assistant may use it to shape guidance <em>without disclosing the detail itself</em>.</span></div>
-      <div class="tier"><span class="badge b-priv">Private</span><span class="desc">Never shown and never used in recommendations.</span></div>
     </div>
     <div class="panel">
       <h3>What the assistant can see</h3>
-      <div class="sub" id="inspectSub">Select a teammate to see how their profile is shared. Fields marked AI-only or Private are handled discreetly.</div>
+      <div class="sub" id="inspectSub">Select a teammate to see how their profile is shared. Fields marked AI-only are handled discreetly.</div>
       <div id="inspect"></div>
     </div>
   </div>
@@ -393,7 +392,7 @@ function lower(s){return s.charAt(0).toLowerCase()+s.slice(1);}
 /* ===== profile inspector: shows how each field is shared ===== */
 function renderInspect(){
   const p=TEAM[selected];
-  document.getElementById('inspectSub').textContent=`How ${p.name.split(' ')[0]}'s profile is shared${viewerRole==='manager'?', viewed as their manager':''}. AI-only and Private fields are handled discreetly.`;
+  document.getElementById('inspectSub').textContent=`How ${p.name.split(' ')[0]}'s profile is shared${viewerRole==='manager'?', viewed as their manager':''}. AI-only fields are handled discreetly.`;
   const labels={hours:'Hours',communication:'Communication',urgency:'Urgent vs non-urgent',feedback:'Feedback',meetings:'Meetings',assignments:'Assignments',strengths:'Strengths',support:'Feeling supported',note:'Personal note'};
   const badge={team:'b-team',manager:'b-mgr',ai:'b-ai',private:'b-priv'};
   const badgeText={team:'Team',manager:'Manager',ai:'AI-only',private:'Private'};

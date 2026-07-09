@@ -182,9 +182,8 @@
       <li><strong>Team</strong> — shown on your profile and visible to everyone.</li>
       <li><strong>Manager</strong> — shared with your manager, not the whole team.</li>
       <li><strong>AI-only</strong> — kept off your profile, but the collaboration assistant may use it to guide people <em>without revealing the detail itself</em> (for example, suggesting a better time to reach you without saying why).</li>
-      <li><strong>Private</strong> — kept entirely to yourself and never used.</li>
     </ul>
-    <span style="display:inline-block;margin-top:10px;">You'll review everything — and can adjust any privacy setting — before your profile is saved.</span>
+    <span style="display:inline-block;margin-top:10px;">A few basics are required, but most questions are optional — <strong>skip anything you'd rather not answer</strong>. You'll review everything, and can adjust any privacy setting, before your profile is saved.</span>
   </div>
 
   <div class="start-cue" id="startCue">
@@ -205,7 +204,7 @@
   <!-- PROFILE PREVIEW -->
   <div class="preview" id="preview">
     <div class="edit-notice">✏️ This is your draft — <strong>everything below is editable</strong>. Click any text to reword or delete it, soften anything too personal, or tap × to remove a tag. Nothing is saved until you download.</div>
-    <div class="privacy-note">🔒 <strong>You control who sees each part.</strong> Use the "Who sees this" menu on each field: <strong>Team</strong> (everyone), <strong>Manager</strong> (your manager only), <strong>AI-only</strong> (the assistant can use it to guide people without revealing it), or <strong>Private</strong> (kept off your profile entirely). Defaults are set for you — adjust any you like.</div>
+    <div class="privacy-note">🔒 <strong>You control who sees each part.</strong> Use the "Who sees this" menu on each field: <strong>Team</strong> (everyone), <strong>Manager</strong> (your manager only), or <strong>AI-only</strong> (the assistant can use it to guide people without revealing it). Remove anything you'd rather not include with the ✕. Defaults are set for you — adjust any you like.</div>
     <div class="card" id="card"></div>
     <div class="actions">
       <button class="btn-primary" id="download">⬇ Download my profile page</button>
@@ -282,14 +281,14 @@ const DEMO_SCRIPT = [
   {field:"hours", reaction:"Great to meet you!", question:"What are your typical working hours and timezone — and when do you tend to be most focused vs. most reachable?", options:["9–5 in EST, sharpest in the morning","Flexible hours, best after lunch","Early bird — online by 7, done by 3","I block mornings for focus, afternoons for meetings"], multi:true, optional:false},
   {field:"communication", reaction:"That's really useful to know.", question:"How do you prefer to communicate day to day?", options:["Async first — write it down","Quick things in chat, big things in a call","I check messages in batches, not instantly","A same-day reply is my norm"], multi:true, optional:false},
   {field:"urgency", reaction:"Helpful to know how to reach you when it matters.", question:"How should people reach you for urgent things vs. things that can wait?", options:["Urgent: call or text me directly","Urgent: tag me in chat with 'urgent'","Non-urgent: email or a normal message is fine","Please don't mark things urgent unless they truly are"], multi:true, optional:false},
-  {field:"feedback", reaction:"Makes sense.", question:"How do you like to receive feedback?", options:["Direct and in the moment","Gentle, with a bit of context","Scheduled, not surprise","In private rather than in a group","In writing so I can sit with it"], multi:true, optional:false},
-  {field:"assignments", reaction:"Good to know how to hand things off to you.", question:"When someone gives you a task or assignment, how do you like to receive it?", options:["Written, with clear context and the goal","A quick chat to talk it through","Just the outcome — let me figure out the how","Step-by-step details, not just the big picture","Clear deadline and priority up front"], multi:true, optional:false},
+  {field:"feedback", reaction:"Makes sense.", question:"How do you like to receive feedback?", options:["Direct and in the moment","Gentle, with a bit of context","Scheduled, not surprise","In private rather than in a group","In writing so I can sit with it"], multi:true, optional:true},
+  {field:"assignments", reaction:"Good to know how to hand things off to you.", question:"When someone gives you a task or assignment, how do you like to receive it?", options:["Written, with clear context and the goal","A quick chat to talk it through","Just the outcome — let me figure out the how","Step-by-step details, not just the big picture","Clear deadline and priority up front"], multi:true, optional:true},
   {field:"meetings", reaction:"Good to know — that helps people include you well.", question:"How do you feel about participating in meetings? (No wrong answer — it just helps people bring you in the right way.)", options:["Happy to speak up live","I do better with a pre-read","I warm up more in small groups","I often think first, share after","Camera-off helps me focus"], multi:true, optional:true},
-  {field:"strengths", reaction:"Love that.", question:"What are you genuinely good at — the things teammates come to you for?", options:["Strategy & big-picture thinking","Writing & communication","Facilitation","Problem-solving","Mentoring others","Getting into the details"], multi:true, optional:false},
-  {field:"stressors", reaction:"Thank you — that's the kind of thing teams rarely say out loud.", question:"What tends to drain you at work, and what conditions bring out your best?", options:["Unclear priorities stress me out","Too many meetings drain me","I thrive with focused, uninterrupted time","Last-minute changes are hard for me","I do best with clear ownership"], multi:true, optional:false},
-  {field:"growth", reaction:"That's a great thing to be intentional about.", question:"What would you like to learn or grow into?", options:["Leadership & people skills","Deeper technical skills","Public speaking / presenting","Strategy & product thinking","Better work-life balance"], multi:true, optional:false},
+  {field:"strengths", reaction:"Love that.", question:"What are you genuinely good at — the things teammates come to you for?", options:["Strategy & big-picture thinking","Writing & communication","Facilitation","Problem-solving","Mentoring others","Getting into the details"], multi:true, optional:true},
+  {field:"stressors", reaction:"Thank you — that's the kind of thing teams rarely say out loud.", question:"What tends to drain you at work, and what conditions bring out your best?", options:["Unclear priorities stress me out","Too many meetings drain me","I thrive with focused, uninterrupted time","Last-minute changes are hard for me","I do best with clear ownership"], multi:true, optional:true},
+  {field:"growth", reaction:"That's a great thing to be intentional about.", question:"What would you like to learn or grow into?", options:["Leadership & people skills","Deeper technical skills","Public speaking / presenting","Strategy & product thinking","Better work-life balance"], multi:true, optional:true},
   {field:"considerations", reaction:"Thank you for trusting the team with that.", question:"This one is completely optional — is there anything cultural, personal, accessibility-related, or just life context you'd like the team to be aware of? Only share what feels right for you.", options:["I observe religious holidays the team may not","I'm caregiving outside work hours","I'm most productive outside 9–5","English is my second language","I have accessibility needs worth noting"], multi:true, optional:true},
-  {field:"support", reaction:"That really matters.", question:"What helps you feel included, supported, and like you belong on a team?", options:["Being looped in early on decisions","Regular check-ins with my manager","Public recognition for good work","Space to work independently","Knowing it's safe to ask questions"], multi:true, optional:false},
+  {field:"support", reaction:"That really matters.", question:"What helps you feel included, supported, and like you belong on a team?", options:["Being looped in early on decisions","Regular check-ins with my manager","Public recognition for good work","Space to work independently","Knowing it's safe to ask questions"], multi:true, optional:true},
   {field:"humanNote", reaction:"Love it.", question:"Last one, just for fun — tell us something human about you. (Optional!)", options:["Coffee keeps me alive","Weekend hiker","Parent of small humans","Always have a side project going","Ask me about my dog"], multi:true, optional:true},
 ];
 let demoMode=false;
@@ -451,7 +450,7 @@ function renderOptions(q){
     const def=FIELD_DEFAULT_TIER[field]||'team';
     if(!intakeTiers[field])intakeTiers[field]=def;
     const wrap=document.createElement('div');wrap.className='privacy-inline';
-    const tiers=[['team','Team'],['manager','Manager'],['ai','AI-only'],['private','Private']];
+    const tiers=[['team','Team'],['manager','Manager'],['ai','AI-only']];
     wrap.innerHTML='<span class="pl">🔒 Who sees this?</span>';
     tiers.forEach(([t,label])=>{
       const b=document.createElement('button');b.className='pi-chip'+(intakeTiers[field]===t?' on':'');b.dataset.t=t;b.textContent=label;
@@ -693,7 +692,7 @@ function visSelect(key){
   const opt=(v,l)=>`<option value="${v}" ${t===v?'selected':''}>${l}</option>`;
   return `<span class="vis"><label>Who sees this</label>
     <select data-vis="${key}" data-tier="${t}" onchange="this.setAttribute('data-tier',this.value)">
-      ${opt('team','Team')}${opt('manager','Manager')}${opt('ai','AI-only')}${opt('private','Private')}
+      ${opt('team','Team')}${opt('manager','Manager')}${opt('ai','AI-only')}
     </select></span>`;
 }
 function txtField(key,label,val){
@@ -786,7 +785,7 @@ function buildProfilePage(p){
   const arr=a=>Array.isArray(a)&&a.filter(Boolean).length>0;
   const C=a=>arr(a)?`<div class="chips">${a.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</div>`:'';
   // Only Team-tier fields appear on a standalone (public) profile page.
-  // A static page can't verify the viewer, so Manager/AI-only/Private are all withheld here.
+  // A static page can't verify the viewer, so Manager and AI-only fields are withheld here.
   const F=(key,label,inner)=>{ if(!inner)return ''; if(tierOf(key)!=='team')return ''; return `<div class="field" data-field="${key}"><h4>${label}</h4>${inner}</div>`; };
   const P=(key,text)=>`<p contenteditable="false" data-key="${key}">${esc(text)}</p>`;
   // count what's withheld (anything not Team) so we can note it honestly
@@ -852,7 +851,7 @@ ${F('growth','Growing toward',p.growth?P('growth',p.growth):'')}
 ${F('considerations','Good to know',p.considerations?P('considerations',p.considerations):'')}
 ${F('support','What helps me feel supported',p.support?P('support',p.support):'')}
 ${F('humanNote','A little about me',p.humanNote?P('humanNote',p.humanNote):'')}
-${hiddenCount>0?`<div class="priv-foot">🔒 ${hiddenCount} field${hiddenCount>1?'s are':' is'} set to Manager, AI-only, or Private and kept off this public profile — shared only through the manager view or used discreetly by the assistant, as ${esc(p.name.split(' ')[0])} allowed.</div>`:''}
+${hiddenCount>0?`<div class="priv-foot">🔒 ${hiddenCount} field${hiddenCount>1?'s are':' is'} set to Manager or AI-only and kept off this public profile — shared only through the manager view or used discreetly by the assistant, as ${esc(p.name.split(' ')[0])} allowed.</div>`:''}
 </div>
 <script type="application/json" id="teamlens-profile">${JSON.stringify(dataBlob)}<\/script>
 <script>
