@@ -8,8 +8,16 @@
 body{font-family:'Albert Sans',sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;min-height:100vh;display:grid;place-items:center;padding:40px 20px;
 background-image:none;}
 .card{background:#f7f9fb;border:1px solid var(--line);border-radius:22px;padding:42px;max-width:620px;width:100%;box-shadow:0 16px 50px rgba(20,32,28,0.14);}
-h2{font-family:'Fraunces',serif;font-weight:900;font-size:38px;letter-spacing:-0.02em;}
-.role{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-bright);margin:5px 0 24px;}
+.phead{display:flex;align-items:center;gap:20px;margin-bottom:24px;}
+.avatar-wrap{position:relative;flex-shrink:0;}
+.avatar{width:96px;height:96px;border-radius:50%;overflow:hidden;background:#dce8f5;display:block;box-shadow:0 4px 14px rgba(20,32,28,0.12);}
+.avatar svg,.avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+.avatar-upload{position:absolute;bottom:-2px;right:-2px;width:30px;height:30px;border-radius:50%;background:var(--teal);color:#fff;border:2px solid #f7f9fb;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:14px;}
+body.editing .avatar-upload{display:flex;}
+.avatar-upload:hover{background:var(--teal-bright);}
+.phead .names{min-width:0;}
+h2{font-family:'Fraunces',serif;font-weight:900;font-size:34px;letter-spacing:-0.02em;}
+.role{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-bright);margin:5px 0 0;}
 .tagline{font-family:'Fraunces',serif;font-size:20px;font-style:italic;color:var(--teal);margin-bottom:24px;}
 .field{margin-bottom:20px;}
 .field h4{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--copper);margin-bottom:6px;}
@@ -39,7 +47,43 @@ body.editing .edit-hint{display:block;}
 </div>
 <div class="edit-hint" id="editHint">You're editing the visible fields — click any text to change it, then download. To change privacy levels, add hidden fields, or start fresh, use “Redo full intake.”</div>
 <div class="card">
-<h2 contenteditable="false" data-key="name">Tariq Hassan</h2><div class="role" contenteditable="false" data-key="role">Product Manager</div>
+<div class="phead">
+  <div class="avatar-wrap">
+    <div class="avatar" id="avatar"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="140" height="140">
+  <defs><clipPath id="cir"><circle cx="100" cy="100" r="100"/></clipPath></defs>
+  <g clip-path="url(#cir)">
+    <rect width="200" height="200" fill="#e7dcc9"/>
+    <!-- shoulders / top -->
+    <path d="M40 200 Q40 150 100 150 Q160 150 160 200 Z" fill="#1a2b45"/>
+    <path d="M84 150 Q100 162 116 150 L116 138 Q100 146 84 138 Z" fill="#a8703c"/>
+    <!-- neck -->
+    <rect x="90" y="126" width="20" height="24" rx="8" fill="#a8703c"/>
+    <!-- head -->
+    <ellipse cx="100" cy="96" rx="40" ry="44" fill="#a8703c"/>
+    <!-- ears -->
+    <circle cx="60" cy="98" r="7" fill="#a8703c"/><circle cx="140" cy="98" r="7" fill="#a8703c"/>
+    <path d="M66 108 Q100 138 134 108 Q134 122 100 128 Q66 122 66 108 Z" fill="#120a04" opacity="0.9"/>
+    <!-- hair -->
+    <path d="M50 78 Q50 34 100 34 Q150 34 150 78 L150 66 Q150 44 100 44 Q50 44 50 66 Z" fill="#120a04"/>
+    <!-- eyes -->
+    <ellipse cx="84" cy="94" rx="4.2" ry="5" fill="#1a2b45"/>
+    <ellipse cx="116" cy="94" rx="4.2" ry="5" fill="#1a2b45"/>
+    <!-- brows -->
+    <path d="M78 84 Q84 81 90 84" stroke="#120a04" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <path d="M110 84 Q116 81 122 84" stroke="#120a04" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <!-- nose -->
+    <path d="M100 98 Q97 106 101 108" stroke="#1a2b45" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.5"/>
+    <!-- smile -->
+    <path d="M88 114 Q100 124 112 114" stroke="#1a2b45" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+  </g>
+  <circle cx="100" cy="100" r="98" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="2"/>
+</svg></div>
+    <label class="avatar-upload" title="Upload your own photo">📷<input type="file" accept="image/*" id="avatarFile" style="display:none"></label>
+  </div>
+  <div class="names">
+    <h2 contenteditable="false" data-key="name">Tariq Hassan</h2><div class="role" contenteditable="false" data-key="role">Product Manager</div>
+  </div>
+</div>
 <div class="tagline" contenteditable="false" data-key="tagline">"My job is to keep us pointed at the thing that actually matters."</div>
 <div class="field" data-field="hours"><h4>Hours & timezone</h4><p contenteditable="false" data-key="hours">9–5 PST (UTC−8); focus 9–12. Most reachable in my afternoon (end of day for Europe).</p></div>
 <div class="field" data-field="communication"><h4>How I communicate</h4><p contenteditable="false" data-key="communication">Whatever fits the moment — chat for quick, a call for nuance. I write detailed end-of-day handoffs.</p></div>
@@ -60,6 +104,14 @@ body.editing .edit-hint{display:block;}
 (function(){
   var editing=false;
   var tgl=document.getElementById('editToggle'), sv=document.getElementById('saveBtn');
+  // let a real user swap the illustrated avatar for their own photo
+  var af=document.getElementById('avatarFile'), av=document.getElementById('avatar');
+  if(af){ af.onchange=function(e){
+    var file=e.target.files&&e.target.files[0]; if(!file)return;
+    var r=new FileReader();
+    r.onload=function(ev){ av.innerHTML='<img src="'+ev.target.result+'" alt="profile photo">'; };
+    r.readAsDataURL(file);
+  };}
   function setEdit(on){
     editing=on;
     document.body.classList.toggle('editing',on);
